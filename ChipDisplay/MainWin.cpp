@@ -6,7 +6,7 @@
 #include <QMessageBox>
 #include <QGraphicsItem>
 
-#include "Cif.h"
+#include <Cif/Cif.h>
 #include "GraphicsLayerView.h"
 
 MainWin::MainWin(QWidget *parent) :

@@ -2,7 +2,7 @@
 
 #include <QStringList>
 
-#include "GraphicsLayer.h"
+#include "../GraphicsLayer.h"
 
 namespace Cif {
 File* Reader::Read(QString data)
