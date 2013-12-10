@@ -5,7 +5,7 @@
 #include <QMap>
 #include <QVariant>
 #include <QStringList>
-#include "Globals.h"
+#include "../Globals.h"
 
 class GraphicsLayer;
 

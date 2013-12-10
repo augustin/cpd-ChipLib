@@ -10,17 +10,13 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = CIFdisplay
 TEMPLATE = app
 
+include(../ChipLib/ChipLib.pri)
 
 SOURCES += Main.cpp \
-        MainWin.cpp \
-    Globals.cpp \
-    Cif.cpp \
-    GraphicsLayerView.cpp
+		MainWin.cpp \
+	GraphicsLayerView.cpp
 
 HEADERS  += MainWin.h \
-    Globals.h \
-    Cif.h \
-    GraphicsLayer.h \
-    GraphicsLayerView.h
+	GraphicsLayerView.h
 
 FORMS    += MainWin.ui

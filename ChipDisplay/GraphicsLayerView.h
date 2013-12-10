@@ -1,8 +1,7 @@
 #ifndef GRAPHICSLAYERVIEW_H
 #define GRAPHICSLAYERVIEW_H
 
-#include "GraphicsLayer.h"
-
+#include <GraphicsLayer.h>
 #include <QGraphicsScene>
 
 class GraphicsLayerView : public GraphicsLayer
