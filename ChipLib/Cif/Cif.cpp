@@ -70,7 +70,11 @@ File::Command Reader::readCommand(QString l, int lineNum, bool* worked)
         break;
     case CALL:
         ret.token = CALL;
-        *worked = false;
+        ret.params.append(objs[1].toInt());
+        if(objs.size() > 2) {
+            *worked = false;
+            LOG("ERR", lineNum+1, "CALL transforms not implemented!");
+        }
         break;
     case LAYER:
         ret.token = LAYER;
@@ -94,7 +98,7 @@ bool Parse(GraphicsLayer *abs, Cif::File* file)
                     abs->rect(c.params[0],c.params[1],c.params[2],c.params[3]);
                 }
             } else {
-                LOG("WARN", -1, "Parser function not implemented!!");
+                LOG("ERR", -1, QString("Function '%1' not implemented!").arg(QChar(c.token)));
             }
         }
         break;

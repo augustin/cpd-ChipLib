@@ -17,7 +17,7 @@ MainWin::MainWin(QWidget *parent) :
     last = 0;
     ui->graphicsView->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
     ui->graphicsView->setDragMode(QGraphicsView::RubberBandDrag);
-    //ui->graphicsView->setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers)));
+    ui->graphicsView->setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers)));
     ui->graphicsView->setScene(new QGraphicsScene(ui->graphicsView));
     ui->graphicsView->scale(1.0,-1.0);
 
