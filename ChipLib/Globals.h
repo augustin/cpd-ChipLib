@@ -5,7 +5,7 @@ class QGraphicsView;
 class QString;
 class QByteArray;
 
-#define LOG(type, line, desc) qDebug(QString("%1: %2 \t %3").arg(type).arg(line+1).arg(desc).toUtf8().constData())
+#define LOG(type, line, desc) qDebug("%s: %d\t%s", type, line, qPrintable(desc))
 
 QByteArray qFileGetContents(QString fileName);
 
