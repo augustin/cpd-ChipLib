@@ -91,7 +91,7 @@ File::Command Reader::readCommand(QString l, int lineNum, bool* worked)
                     ret.params.append(T);
                     break;
                 default:
-                    LOG("WARN", lineNum+1, "Unrecognized CALL token!");
+                    LOG("ERR", lineNum+1, "Unrecognized CALL token!");
                     *worked = false;
                 }
 
