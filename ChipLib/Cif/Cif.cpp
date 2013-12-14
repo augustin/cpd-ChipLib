@@ -94,7 +94,9 @@ File::Command Reader::readCommand(QString l, int lineNum, bool* worked)
                     break;
                 default:
                     LOG("ERR", lineNum+1, "Unrecognized CALL token!");
+                    i = objs.size();
                     *worked = false;
+                    continue;
                 }
 
                 ret.params.append(objs[i+1].toInt());
