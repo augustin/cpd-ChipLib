@@ -66,7 +66,9 @@ File::Command Reader::readCommand(QString l, int lineNum, bool* worked)
         break;
     case POLYGON:
         ret.token = POLYGON;
-        *worked = false;
+        for(int i = 1; i < objs.size(); i++) {
+            ret.params.append(objs[i].toInt());
+        }
         break;
     case CALL:
         ret.token = CALL;
