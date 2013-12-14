@@ -77,7 +77,7 @@ File::Command Reader::readCommand(QString l, int lineNum, bool* worked)
         ret.name = objs[1];
         break;
     default:
-        LOG("WARN", lineNum, QString("unrecognized token %1").arg(objs[0][0].toLatin1()));
+        LOG("WARN", lineNum+1, QString("unrecognized token %1").arg(objs[0][0]));
         *worked = false;
     }
     return ret;
@@ -94,7 +94,7 @@ bool Parse(GraphicsLayer *abs, Cif::File* file)
                     abs->rect(c.params[0],c.params[1],c.params[2],c.params[3]);
                 }
             } else {
-                LOG("WARN", -2, "Parser function not implemented!!");
+                LOG("WARN", -1, "Parser function not implemented!!");
             }
         }
         break;
