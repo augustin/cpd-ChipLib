@@ -17,6 +17,14 @@ enum Token {
     CALL = 'C',
     LAYER = 'L'
 };
+enum TransType {
+    T = 'T', /* translate */
+    M = 'M', /* mirror */
+        X = 'X', /* X (for "mirror") */
+        Y = 'Y', /* Y (for "mirror") */
+    R = 'R'  /* rotate */
+};
+
 struct File {
     /* An operation. Either creates a graphics object,
      * or makes a CALL to execute a Subroutine of commands. */

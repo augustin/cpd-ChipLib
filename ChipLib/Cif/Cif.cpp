@@ -72,8 +72,33 @@ File::Command Reader::readCommand(QString l, int lineNum, bool* worked)
         ret.token = CALL;
         ret.params.append(objs[1].toInt());
         if(objs.size() > 2) {
-            *worked = false;
-            LOG("ERR", lineNum+1, "CALL transforms not implemented!");
+            for(int i = 2; i < objs.size(); i++) {
+                switch(objs[i][0].toLatin1()) {
+                case M:
+                    ret.params.append(M);
+                    if(objs[i+1].startsWith("X")) {
+                        ret.params.append(X);
+                    } else {
+                        ret.params.append(Y);
+                    }
+                    ret.params.append(-1); /* empty command */
+                    i += 1;
+                    continue;
+                case R:
+                    ret.params.append(R);
+                    break;
+                case T:
+                    ret.params.append(T);
+                    break;
+                default:
+                    LOG("WARN", lineNum+1, "Unrecognized CALL token!");
+                    continue;
+                }
+
+                ret.params.append(objs[i+1].toInt());
+                ret.params.append(objs[i+2].toInt());
+                i += 2;
+            }
         }
         break;
     case LAYER:
