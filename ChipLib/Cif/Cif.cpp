@@ -93,8 +93,8 @@ bool Parse(GraphicsLayer *abs, Cif::File* file)
                 } else {
                     abs->rect(c.params[0],c.params[1],c.params[2],c.params[3]);
                 }
-            } else if(c.token == ROUNDFLASH) {
-                qDebug("hi");
+            } else {
+                LOG("WARN", -2, "Parser function not implemented!!");
             }
         }
         break;
