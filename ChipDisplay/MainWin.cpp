@@ -5,9 +5,10 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QGraphicsItem>
+#include <QSvgGenerator>
 
 #include <Cif/Cif.h>
-#include "GraphicsLayerView.h"
+#include "PainterLG.h"
 
 MainWin::MainWin(QWidget *parent) :
     QMainWindow(parent),
@@ -37,7 +38,19 @@ void MainWin::on_actionOpen_CIF_triggered()
     if(filename.size()) {
         Cif::File* f;
         f = Cif::Reader::Read(qFileGetContents(filename));
-        Cif::Parse(new GraphicsLayerView(ui->graphicsView->scene()), f);
+
+        QSvgGenerator g;
+        g.setTitle("hello");
+        g.setSize(QSize(100,100));
+        g.setFileName("C:/augustin/school/SFP/softwar/file.svg");
+        QPainter p;
+        p.begin(&g);
+        PainterLG* lg = new PainterLG(&p);
+        Cif::interpreter(lg, f);
+        p.end();
+
+        delete f;
+        delete lg;
     }
     ui->graphicsView->setVisible(true);
 }

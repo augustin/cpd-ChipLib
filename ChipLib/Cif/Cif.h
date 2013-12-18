@@ -7,7 +7,7 @@
 #include <QStringList>
 #include "../Globals.h"
 
-class GraphicsLayer;
+class LayerGraphics;
 
 namespace Cif {
 enum Token {
@@ -18,11 +18,11 @@ enum Token {
     LAYER = 'L'
 };
 enum TransType {
-    T = 'T', /* translate */
     M = 'M', /* mirror */
         X = 'X', /* X (for "mirror") */
         Y = 'Y', /* Y (for "mirror") */
-    R = 'R'  /* rotate */
+    R = 'R',  /* rotate */
+    T = 'T' /* translate */
 };
 
 struct File {
@@ -53,7 +53,16 @@ private:
     static File::Command readCommand(QString l, int lineNum, bool *worked);
 };
 
-bool Parse(GraphicsLayer *abs, Cif::File* file);
+bool interpreter(LayerGraphics *lg, Cif::File* file);
+
+/* private parser stuff */
+struct interp_Transform {
+    TransType type;
+    QList<qint64> params;
+};
+
+bool interp_subrt(LayerGraphics* lg, Cif::File* file, File::Subroutine func, QList<qint64> params = QList<qint64>());
+bool interp_cmd(LayerGraphics* lg, Cif::File* file, File::Command cmd, QList<interp_Transform> trans = QList<interp_Transform>());
 }
 
 #endif // CIF_H

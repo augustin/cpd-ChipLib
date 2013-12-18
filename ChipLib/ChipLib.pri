@@ -5,6 +5,6 @@ SOURCES += $$PWD/Cif/Cif.cpp \
 
 HEADERS += $$PWD/Cif/Cif.h \
   $$PWD/Globals.h \
-  $$PWD/GraphicsLayer.h
+  $$PWD/LayerGraphics.h
 
 INCLUDEPATH += $$PWD
