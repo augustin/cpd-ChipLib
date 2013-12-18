@@ -7,7 +7,7 @@
 QT       = core gui opengl svg
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = CIFdisplay
+TARGET = ChipDisplay
 TEMPLATE = app
 
 include(../ChipLib/ChipLib.pri)
