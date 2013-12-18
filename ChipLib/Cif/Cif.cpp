@@ -1,8 +1,7 @@
 #include "Cif.h"
 
 #include <QStringList>
-
-#include "../GraphicsLayer.h"
+#include "../LayerGraphics.h"
 
 namespace Cif {
 File* Reader::Read(QString data)
@@ -83,7 +82,6 @@ File::Command Reader::readCommand(QString l, int lineNum, bool* worked)
                     } else {
                         ret.params.append(Y);
                     }
-                    ret.params.append(-1); /* empty command */
                     i += 1;
                     continue;
                 case R:
@@ -116,23 +114,107 @@ File::Command Reader::readCommand(QString l, int lineNum, bool* worked)
     return ret;
 }
 
-bool Parse(GraphicsLayer *abs, Cif::File* file)
+/**************************************************************
+ ********************* THE INTERP! ****************************
+ **************************************************************/
+bool interpreter(LayerGraphics *lg, Cif::File* file)
 {
-    foreach(File::Subroutine s, file->subroutines.values()) {
-        foreach(File::Command c, s.commands) {
-            if(c.token == BOX) {
-                if(c.params.size() == 5) {
-                    abs->rect(c.params[0],c.params[1],c.params[2],c.params[3],c.params[4]);
-                } else {
-                    abs->rect(c.params[0],c.params[1],c.params[2],c.params[3]);
-                }
-            } else {
-                LOG("ERR", -1, QString("Function '%1' not implemented!").arg(QChar(c.token)));
-            }
+    bool didnotwork = false;
+    foreach(File::Command s, file->rootCommands) {
+        didnotwork = !interp_cmd(lg, file, s) || didnotwork;
+        if(didnotwork) {
+            LOG("ERR", -1, "Interpreter didn't work!");
+            return false;
         }
         break;
     }
+    return true;
+}
 
+/**************************************************************
+ **************** PRIVATE INTERP STUFFS! **********************
+ **************************************************************/
+bool interp_subrt(LayerGraphics* lg, Cif::File* file, File::Subroutine func, QList<qint64> params)
+{
+    QList<interp_Transform> trans;
+    for(int i = 1; i < params.size(); i++) {
+        switch(params.at(i)) {
+        case M:
+        {
+            interp_Transform t;
+            t.type = M;
+            t.params.append(params.at(i+1));
+            i += 1;
+        }
+            continue;
+        case R:
+        {
+            interp_Transform t;
+            t.type = R;
+            t.params.append(params.at(i+1));
+            t.params.append(params.at(i+2));
+            trans.append(t);
+            i += 2;
+        }
+            continue;
+        case T:
+        {
+            interp_Transform t;
+            t.type = T;
+            t.params.append(params.at(i+1));
+            t.params.append(params.at(i+2));
+            trans.append(t);
+            i += 2;
+        }
+            continue;
+        default:
+            LOG("ERR", -1, "Unexpected transform type!");
+        }
+    }
+    foreach(File::Command c, func.commands) {
+        interp_cmd(lg, file, c, trans);
+    }
+    return true;
+}
+
+bool interp_cmd(LayerGraphics* lg, Cif::File* file, File::Command cmd, QList<interp_Transform> trans)
+{
+    switch(cmd.token) {
+    case BOX:
+    {
+        qint64 length = cmd.params[0],
+                width = cmd.params[1],
+                xpos  = cmd.params[2],
+                ypos  = cmd.params[3],
+                rot   = (cmd.params.size() == 5) ? cmd.params[4] : 0;
+        for(int i = 0; i < trans.size(); i++) {
+            interp_Transform t = trans.at(i);
+            if(t.type == M) {
+                if(t.params.at(0) == X) { width = width * -1; }
+                if(t.params.at(0) == Y) { length = length * -1; }
+            } else if(t.type == T) {
+                //LOG("ERR", -1, "rotate probably doesn't work properly!");
+                xpos += t.params.at(0);
+                ypos += t.params.at(1);
+            } else if(t.type == R) {
+                rot += t.params.at(0);
+            }
+        }
+        lg->rect(length, width, xpos, ypos, rot);
+    }
+        break;
+    case POLYGON:
+        break;
+    case ROUNDFLASH:
+        break;
+    case LAYER:
+        break;
+    case CALL:
+        interp_subrt(lg, file, file->subroutines.value(cmd.params.at(0)), cmd.params);
+        break;
+    default:
+        LOG("ERR", -1, QString("Token '%1' not implemented!").arg(QChar(cmd.token)));
+    }
     return true;
 }
 
