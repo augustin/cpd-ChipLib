@@ -1,7 +1,7 @@
 #include "Cif.h"
 
 #include <QStringList>
-#include "../LayerGraphics.h"
+#include "LayerGraphics.h"
 
 namespace Cif {
 File* Reader::Read(QString data)
