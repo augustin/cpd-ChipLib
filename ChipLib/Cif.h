@@ -53,16 +53,24 @@ private:
     static File::Command readCommand(QString l, int lineNum, bool *worked);
 };
 
-bool interpreter(LayerGraphics *lg, Cif::File* file);
+class Interpreter {
+public:
+	static bool run(LayerGraphics *lg, Cif::File* file, QString layerName = "");
 
-/* private parser stuff */
-struct interp_Transform {
-    TransType type;
-    QList<qint64> params;
+private:
+	/* private parser stuff */
+	struct interp_Transform {
+		TransType type;
+		QList<qint64> params;
+	};
+
+	static bool subroutine(LayerGraphics* lg, Cif::File* file, File::Subroutine func, QList<qint64> params = QList<qint64>());
+	static bool command(LayerGraphics* lg, Cif::File* file, File::Command cmd, QList<interp_Transform> trans = QList<interp_Transform>());
+
+	static QString layerName;
+	static bool doLayer;
 };
 
-bool interp_subrt(LayerGraphics* lg, Cif::File* file, File::Subroutine func, QList<qint64> params = QList<qint64>());
-bool interp_cmd(LayerGraphics* lg, Cif::File* file, File::Command cmd, QList<interp_Transform> trans = QList<interp_Transform>());
 }
 
 #endif // CIF_H
