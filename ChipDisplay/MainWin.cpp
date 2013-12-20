@@ -7,7 +7,7 @@
 #include <QGraphicsItem>
 #include <QSvgGenerator>
 
-#include <Cif/Cif.h>
+#include <Cif.h>
 #include "PainterLG.h"
 
 MainWin::MainWin(QWidget *parent) :
