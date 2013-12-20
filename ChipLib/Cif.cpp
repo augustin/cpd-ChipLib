@@ -114,14 +114,19 @@ File::Command Reader::readCommand(QString l, int lineNum, bool* worked)
     return ret;
 }
 
+QString Interpreter::layerName;
+bool Interpreter::doLayer;
+
 /**************************************************************
  ********************* THE INTERP! ****************************
  **************************************************************/
-bool interpreter(LayerGraphics *lg, Cif::File* file)
+bool Interpreter::run(LayerGraphics *lg, Cif::File* file, QString layer)
 {
     bool didnotwork = false;
+	layerName = layer;
+	doLayer = true;
     foreach(File::Command s, file->rootCommands) {
-        didnotwork = !interp_cmd(lg, file, s) || didnotwork;
+		didnotwork = !command(lg, file, s) || didnotwork;
         if(didnotwork) {
             LOG("ERR", -1, "Interpreter didn't work!");
             return false;
@@ -134,7 +139,7 @@ bool interpreter(LayerGraphics *lg, Cif::File* file)
 /**************************************************************
  **************** PRIVATE INTERP STUFFS! **********************
  **************************************************************/
-bool interp_subrt(LayerGraphics* lg, Cif::File* file, File::Subroutine func, QList<qint64> params)
+bool Interpreter::subroutine(LayerGraphics* lg, Cif::File* file, File::Subroutine func, QList<qint64> params)
 {
     QList<interp_Transform> trans;
     for(int i = 1; i < params.size(); i++) {
@@ -172,13 +177,14 @@ bool interp_subrt(LayerGraphics* lg, Cif::File* file, File::Subroutine func, QLi
         }
     }
     foreach(File::Command c, func.commands) {
-        interp_cmd(lg, file, c, trans);
+		command(lg, file, c, trans);
     }
     return true;
 }
 
-bool interp_cmd(LayerGraphics* lg, Cif::File* file, File::Command cmd, QList<interp_Transform> trans)
+bool Interpreter::command(LayerGraphics* lg, Cif::File* file, File::Command cmd, QList<interp_Transform> trans)
 {
+	if(!((cmd.token == LAYER) || (cmd.token == CALL) || doLayer)) { return true; }
     switch(cmd.token) {
     case BOX:
     {
@@ -208,9 +214,14 @@ bool interp_cmd(LayerGraphics* lg, Cif::File* file, File::Command cmd, QList<int
     case ROUNDFLASH:
         break;
     case LAYER:
+	{
+		if(layerName.size() > 0) {
+			doLayer = (cmd.name == layerName);
+		}
+	}
         break;
     case CALL:
-        interp_subrt(lg, file, file->subroutines.value(cmd.params.at(0)), cmd.params);
+		subroutine(lg, file, file->subroutines.value(cmd.params.at(0)), cmd.params);
         break;
     default:
         LOG("ERR", -1, QString("Token '%1' not implemented!").arg(QChar(cmd.token)));

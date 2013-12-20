@@ -39,15 +39,15 @@ void MainWin::on_actionOpen_CIF_triggered()
         Cif::File* f;
         f = Cif::Reader::Read(qFileGetContents(filename));
 
-        QSvgGenerator g;
-        g.setTitle("hello");
-        g.setSize(QSize(100,100));
-        g.setFileName("C:/augustin/school/SFP/softwar/file.svg");
-        QPainter p;
+		QSvgGenerator g;
+		g.setTitle("hello");
+		g.setSize(QSize(100,100));
+		g.setFileName("/media/cavalierpc/augustin/school/SFP/softwar/file.svg");
+		QPainter p;
         p.begin(&g);
         PainterLG* lg = new PainterLG(&p);
-        Cif::interpreter(lg, f);
-        p.end();
+		Cif::Interpreter::run(lg, f, "CMF");
+		p.end();
 
         delete f;
         delete lg;
