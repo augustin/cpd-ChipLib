@@ -7,8 +7,10 @@
 #include <QGraphicsItem>
 #include <QSvgGenerator>
 
-#include <Cif.h>
+#include <Chip.h>
+
 #include "PainterLG.h"
+#include "GraphicsSceneLG.h"
 
 MainWin::MainWin(QWidget *parent) :
     QMainWindow(parent),
@@ -36,21 +38,9 @@ void MainWin::on_actionOpen_CIF_triggered()
     ui->graphicsView->setVisible(false);
     QString filename = QFileDialog::getOpenFileName(this, "Select CIF file");
     if(filename.size()) {
-        Cif::File* f;
-        f = Cif::Reader::Read(qFileGetContents(filename));
-
-		QSvgGenerator g;
-		g.setTitle("hello");
-		g.setSize(QSize(100,100));
-		g.setFileName("/media/cavalierpc/augustin/school/SFP/softwar/file.svg");
-		QPainter p;
-        p.begin(&g);
-        PainterLG* lg = new PainterLG(&p);
-		Cif::Interpreter::run(lg, f, "CMF");
-		p.end();
-
-        delete f;
-        delete lg;
+		Chip* c = new Chip;
+		c->load(filename);
+		c->render(new GraphicsSceneLG(ui->graphicsView->scene()), "CMS", 12000);
     }
     ui->graphicsView->setVisible(true);
 }
