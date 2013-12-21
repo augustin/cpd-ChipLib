@@ -7,7 +7,7 @@
 #include <QStringList>
 #include "Globals.h"
 
-class LayerGraphics;
+class Chip;
 
 namespace Cif {
 enum Token {
@@ -55,7 +55,7 @@ private:
 
 class Interpreter {
 public:
-	static bool run(LayerGraphics *lg, Cif::File* file, QString layerName = "");
+	static bool run(Chip *chip, Cif::File* file);
 
 private:
 	/* private parser stuff */
@@ -64,11 +64,10 @@ private:
 		QList<qint64> params;
 	};
 
-	static bool subroutine(LayerGraphics* lg, Cif::File* file, File::Subroutine func, QList<qint64> params = QList<qint64>());
-	static bool command(LayerGraphics* lg, Cif::File* file, File::Command cmd, QList<interp_Transform> trans = QList<interp_Transform>());
+	static bool subroutine(Chip *chip, Cif::File* file, File::Subroutine func, QList<qint64> params = QList<qint64>());
+	static bool command(Chip *chip, Cif::File* file, File::Command cmd, QList<interp_Transform> trans = QList<interp_Transform>());
 
 	static QString layerName;
-	static bool doLayer;
 };
 
 }

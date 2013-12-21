@@ -1,7 +1,7 @@
 #include "Cif.h"
 
 #include <QStringList>
-#include "LayerGraphics.h"
+#include "Chip.h"
 
 namespace Cif {
 File* Reader::Read(QString data)
@@ -115,18 +115,15 @@ File::Command Reader::readCommand(QString l, int lineNum, bool* worked)
 }
 
 QString Interpreter::layerName;
-bool Interpreter::doLayer;
 
 /**************************************************************
  ********************* THE INTERP! ****************************
  **************************************************************/
-bool Interpreter::run(LayerGraphics *lg, Cif::File* file, QString layer)
+bool Interpreter::run(Chip *chip, Cif::File* file)
 {
     bool didnotwork = false;
-	layerName = layer;
-	doLayer = true;
     foreach(File::Command s, file->rootCommands) {
-		didnotwork = !command(lg, file, s) || didnotwork;
+		didnotwork = !command(chip, file, s) || didnotwork;
         if(didnotwork) {
             LOG("ERR", -1, "Interpreter didn't work!");
             return false;
@@ -139,7 +136,7 @@ bool Interpreter::run(LayerGraphics *lg, Cif::File* file, QString layer)
 /**************************************************************
  **************** PRIVATE INTERP STUFFS! **********************
  **************************************************************/
-bool Interpreter::subroutine(LayerGraphics* lg, Cif::File* file, File::Subroutine func, QList<qint64> params)
+bool Interpreter::subroutine(Chip* chip, Cif::File* file, File::Subroutine func, QList<qint64> params)
 {
     QList<interp_Transform> trans;
     for(int i = 1; i < params.size(); i++) {
@@ -177,14 +174,13 @@ bool Interpreter::subroutine(LayerGraphics* lg, Cif::File* file, File::Subroutin
         }
     }
     foreach(File::Command c, func.commands) {
-		command(lg, file, c, trans);
+		command(chip, file, c, trans);
     }
     return true;
 }
 
-bool Interpreter::command(LayerGraphics* lg, Cif::File* file, File::Command cmd, QList<interp_Transform> trans)
+bool Interpreter::command(Chip* chip, Cif::File* file, File::Command cmd, QList<interp_Transform> trans)
 {
-	if(!((cmd.token == LAYER) || (cmd.token == CALL) || doLayer)) { return true; }
     switch(cmd.token) {
     case BOX:
     {
@@ -206,7 +202,7 @@ bool Interpreter::command(LayerGraphics* lg, Cif::File* file, File::Command cmd,
                 rot += t.params.at(0);
             }
         }
-        lg->rect(length, width, xpos, ypos, rot);
+		chip->addRect(layerName, length, width, xpos, ypos, rot);
     }
         break;
     case POLYGON:
@@ -214,14 +210,10 @@ bool Interpreter::command(LayerGraphics* lg, Cif::File* file, File::Command cmd,
     case ROUNDFLASH:
         break;
     case LAYER:
-	{
-		if(layerName.size() > 0) {
-			doLayer = (cmd.name == layerName);
-		}
-	}
+		layerName = cmd.name;
         break;
     case CALL:
-		subroutine(lg, file, file->subroutines.value(cmd.params.at(0)), cmd.params);
+		subroutine(chip, file, file->subroutines.value(cmd.params.at(0)), cmd.params);
         break;
     default:
         LOG("ERR", -1, QString("Token '%1' not implemented!").arg(QChar(cmd.token)));
