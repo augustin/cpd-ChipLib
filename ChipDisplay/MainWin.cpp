@@ -62,10 +62,11 @@ void MainWin::focusItemChanged(QGraphicsItem*newItm,QGraphicsItem*,Qt::FocusReas
     if(!newItm) { return; }
     if(last && (last->boundingRect().x() == newItm->boundingRect().x())) { return; }
     last = newItm;
-    QMessageBox::information(this,"info",QString("x: %1 y: %2 w: %3 h: %4")
+    QMessageBox::information(this,"info",QString("x: %1\ny: %2\nw: %3\nh: %4\nr: %5")
                              .arg(newItm->boundingRect().x())
                              .arg(newItm->boundingRect().y())
                              .arg(newItm->boundingRect().width())
-                             .arg(newItm->boundingRect().height()),
+                             .arg(newItm->boundingRect().height())
+                             .arg(newItm->rotation()),
                              QMessageBox::Ok);
 }
