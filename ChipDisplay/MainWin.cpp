@@ -40,7 +40,12 @@ void MainWin::on_actionOpen_CIF_triggered()
     if(filename.size()) {
 		Chip* c = new Chip;
 		c->load(filename);
-		c->render(new GraphicsSceneLG(ui->graphicsView->scene()), "CMS", 12000);
+		QMap<QString, qint64> counts = c->countObjs();
+		QLocale l = QLocale::system();
+		foreach(QString key, counts.keys()) {
+			qDebug(QString("%1\t%2").arg(key).arg(l.toString(counts.value(key))).toUtf8().constData());
+		}
+		c->render(new GraphicsSceneLG(ui->graphicsView->scene()), "CVS", 12000);
     }
     ui->graphicsView->setVisible(true);
 }

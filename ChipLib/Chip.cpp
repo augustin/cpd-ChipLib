@@ -29,6 +29,15 @@ void Chip::addRect(QString layer, qint64 length, qint64 width, qint64 xpos, qint
 	objectsForLayers.value(layer)->append(c);
 }
 
+QMap<QString, qint64> Chip::countObjs()
+{
+	QMap<QString, qint64> ret;
+	foreach(QString key, objectsForLayers.keys()) {
+		ret.insert(key, objectsForLayers.value(key)->size());
+	}
+	return ret;
+}
+
 void Chip::render(LayerGraphics *lg, QString layer, qint64 l)
 {
 	QList<ChipObject>* objects;
