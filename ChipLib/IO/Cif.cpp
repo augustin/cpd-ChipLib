@@ -1,8 +1,5 @@
 #include "Cif.h"
 
-#include <QStringList>
-#include "Chip.h"
-
 namespace Cif {
 File* Reader::Read(QString data)
 {
@@ -69,6 +66,12 @@ File::Command Reader::readCommand(QString l, int lineNum, bool* worked)
             ret.params.append(objs[i].toInt());
         }
         break;
+    case WIRE:
+        ret.token = WIRE;
+        for(int i = 1; i < objs.size(); i++) {
+            ret.params.append(objs[i].toInt());
+        }
+        break;
     case CALL:
         ret.token = CALL;
         ret.params.append(objs[1].toInt());
@@ -114,21 +117,20 @@ File::Command Reader::readCommand(QString l, int lineNum, bool* worked)
     return ret;
 }
 
-QString Interpreter::layerName;
+ChipLayer* Interpreter::layer;
 
 /**************************************************************
  ********************* THE INTERP! ****************************
  **************************************************************/
 bool Interpreter::run(Chip *chip, Cif::File* file)
 {
-    bool didnotwork = false;
+    QList<ChipObject*> a;
     foreach(File::Command s, file->rootCommands) {
-		didnotwork = !command(chip, file, s) || didnotwork;
-        if(didnotwork) {
-            LOG("ERR", -1, "Interpreter didn't work!");
-            return false;
-        }
-        break;
+        a.append(command(chip, file, s));
+    }
+    if(!a.size()) {
+        LOG("ERR", -1, "Interpreter didn't work!");
+        return false;
     }
     return true;
 }
@@ -139,6 +141,7 @@ bool Interpreter::run(Chip *chip, Cif::File* file)
 bool Interpreter::subroutine(Chip* chip, Cif::File* file, File::Subroutine func, QList<qint64> params)
 {
     QList<interp_Transform> trans;
+    bool containsR;
     for(int i = 1; i < params.size(); i++) {
         switch(params.at(i)) {
         case M:
@@ -157,6 +160,7 @@ bool Interpreter::subroutine(Chip* chip, Cif::File* file, File::Subroutine func,
             t.params.append(params.at(i+2));
             trans.append(t);
             i += 2;
+            containsR = true;
         }
             continue;
         case T:
@@ -173,14 +177,23 @@ bool Interpreter::subroutine(Chip* chip, Cif::File* file, File::Subroutine func,
             LOG("ERR", -1, "Unexpected transform type!");
         }
     }
+    QList<ChipObject*> items;
     foreach(File::Command c, func.commands) {
-		command(chip, file, c, trans);
+        items.append(command(chip, file, c, trans));
+    }
+
+    foreach(interp_Transform t, trans) {
+        if(t.type == R) {
+            // TODO
+        }
     }
     return true;
 }
 
-bool Interpreter::command(Chip* chip, Cif::File* file, File::Command cmd, QList<interp_Transform> trans)
+/* ::command -- parses all the things in the command, adds them to chip, and returns what it added */
+QList<ChipObject*> Interpreter::command(Chip* chip, Cif::File* file, File::Command cmd, QList<interp_Transform> trans)
 {
+    QList<ChipObject*> ret;
     switch(cmd.token) {
     case BOX:
     {
@@ -189,36 +202,41 @@ bool Interpreter::command(Chip* chip, Cif::File* file, File::Command cmd, QList<
                 xpos  = cmd.params[2],
                 ypos  = cmd.params[3],
                 rot   = (cmd.params.size() == 5) ? cmd.params[4] : 0;
-        for(int i = 0; i < trans.size(); i++) {
-            interp_Transform t = trans.at(i);
+        foreach(interp_Transform t, trans) {
             if(t.type == M) {
                 if(t.params.at(0) == X) { width = width * -1; }
                 if(t.params.at(0) == Y) { length = length * -1; }
             } else if(t.type == T) {
-                //LOG("ERR", -1, "rotate probably doesn't work properly!");
                 xpos += t.params.at(0);
                 ypos += t.params.at(1);
-            } else if(t.type == R) {
-                rot += t.params.at(0);
-            }
+            } // ignoring R type, it's handled by the caller
         }
-		chip->addRect(layerName, length, width, xpos, ypos, rot);
+        ret.append(layer->addRect(length, width, xpos, ypos, rot));
     }
         break;
     case POLYGON:
         break;
+    case WIRE:
+    {
+        PointList p;
+        for(int i = 1; i < cmd.params.size(); i+=2) {
+            p.append(qMakePair(cmd.params[i], cmd.params[i+1]));
+        }
+        ret.append(layer->addLine(p, cmd.params[0]));
+    }
+        break;
     case ROUNDFLASH:
         break;
     case LAYER:
-		layerName = cmd.name;
+        layer = chip->layer(cmd.name);
         break;
     case CALL:
-		subroutine(chip, file, file->subroutines.value(cmd.params.at(0)), cmd.params);
+        subroutine(chip, file, file->subroutines.value(cmd.params.at(0)), cmd.params);
         break;
     default:
         LOG("ERR", -1, QString("Token '%1' not implemented!").arg(QChar(cmd.token)));
     }
-    return true;
+    return ret;
 }
 
 }

@@ -5,15 +5,15 @@
 #include <QMap>
 #include <QVariant>
 #include <QStringList>
+#include "../Chip.h"
 #include "Globals.h"
-
-class Chip;
 
 namespace Cif {
 enum Token {
     BOX = 'B',
     ROUNDFLASH ='R',
     POLYGON = 'P',
+    WIRE = 'W',
     CALL = 'C',
     LAYER = 'L'
 };
@@ -65,9 +65,9 @@ private:
 	};
 
 	static bool subroutine(Chip *chip, Cif::File* file, File::Subroutine func, QList<qint64> params = QList<qint64>());
-	static bool command(Chip *chip, Cif::File* file, File::Command cmd, QList<interp_Transform> trans = QList<interp_Transform>());
+    static QList<ChipObject*> command(Chip *chip, Cif::File* file, File::Command cmd, QList<interp_Transform> trans = QList<interp_Transform>());
 
-	static QString layerName;
+	static ChipLayer* layer;
 };
 
 }

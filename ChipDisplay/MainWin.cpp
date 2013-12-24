@@ -22,7 +22,6 @@ MainWin::MainWin(QWidget *parent) :
     ui->graphicsView->setDragMode(QGraphicsView::RubberBandDrag);
     ui->graphicsView->setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers)));
     ui->graphicsView->setScene(new QGraphicsScene(ui->graphicsView));
-    ui->graphicsView->scale(1.0,-1.0);
 
     connect(ui->graphicsView->scene(),SIGNAL(focusItemChanged(QGraphicsItem*,QGraphicsItem*,Qt::FocusReason)),this,
             SLOT(focusItemChanged(QGraphicsItem*,QGraphicsItem*,Qt::FocusReason)));
@@ -38,14 +37,14 @@ void MainWin::on_actionOpen_CIF_triggered()
     ui->graphicsView->setVisible(false);
     QString filename = QFileDialog::getOpenFileName(this, "Select CIF file");
     if(filename.size()) {
-		Chip* c = new Chip;
-		c->load(filename);
-		QMap<QString, qint64> counts = c->countObjs();
-		QLocale l = QLocale::system();
-		foreach(QString key, counts.keys()) {
-			qDebug(QString("%1\t%2").arg(key).arg(l.toString(counts.value(key))).toUtf8().constData());
-		}
-		c->render(new GraphicsSceneLG(ui->graphicsView->scene()), "CVS", 12000);
+        Chip* c = new Chip;
+        c->load(filename);
+        QMap<QString, qint64> counts = c->countObjs();
+        QLocale l = QLocale::system();
+        foreach(QString key, counts.keys()) {
+            qDebug(QString("%1\t%2").arg(key).arg(l.toString(counts.value(key))).toUtf8().constData());
+        }
+        c->render(new GraphicsSceneLG(ui->graphicsView->scene()), "CVS", 12000);
     }
     ui->graphicsView->setVisible(true);
 }
