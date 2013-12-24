@@ -3,7 +3,8 @@
 
 #include <QString>
 #include <QStringList>
-#include <QMultiMap>
+#include <QMap>
+#include <QList>
 
 class LayerGraphics;
 
@@ -24,7 +25,7 @@ public:
 
 private:
 	QStringList layers;
-	QMultiMap<QString, ChipObject> objectsForLayers;
+	QMap<QString, QList<ChipObject>* > objectsForLayers;
 };
 
 #endif // CHIP_H
