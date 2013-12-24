@@ -128,10 +128,6 @@ bool Interpreter::run(Chip *chip, Cif::File* file)
     foreach(File::Command s, file->rootCommands) {
         a.append(command(chip, file, s));
     }
-    if(!a.size()) {
-        LOG("ERR", -1, "Interpreter didn't work!");
-        return false;
-    }
     return true;
 }
 
@@ -142,14 +138,14 @@ bool Interpreter::subroutine(Chip* chip, Cif::File* file, File::Subroutine func,
 {
     QList<interp_Transform> trans;
     bool containsR;
-    for(int i = 1; i < params.size(); i++) {
+    for(int i = 1; i < params.size(); i+=2) {
         switch(params.at(i)) {
         case M:
         {
             interp_Transform t;
             t.type = M;
             t.params.append(params.at(i+1));
-            i += 1;
+            trans.append(t);
         }
             continue;
         case R:
@@ -159,7 +155,7 @@ bool Interpreter::subroutine(Chip* chip, Cif::File* file, File::Subroutine func,
             t.params.append(params.at(i+1));
             t.params.append(params.at(i+2));
             trans.append(t);
-            i += 2;
+            i += 1;
             containsR = true;
         }
             continue;
@@ -170,7 +166,7 @@ bool Interpreter::subroutine(Chip* chip, Cif::File* file, File::Subroutine func,
             t.params.append(params.at(i+1));
             t.params.append(params.at(i+2));
             trans.append(t);
-            i += 2;
+            i += 1;
         }
             continue;
         default:
@@ -180,6 +176,10 @@ bool Interpreter::subroutine(Chip* chip, Cif::File* file, File::Subroutine func,
     QList<ChipObject*> items;
     foreach(File::Command c, func.commands) {
         items.append(command(chip, file, c, trans));
+    }
+
+    foreach(ChipObject* itm, items) {
+
     }
 
     foreach(interp_Transform t, trans) {
@@ -204,8 +204,8 @@ QList<ChipObject*> Interpreter::command(Chip* chip, Cif::File* file, File::Comma
                 rot   = (cmd.params.size() == 5) ? cmd.params[4] : 0;
         foreach(interp_Transform t, trans) {
             if(t.type == M) {
-                if(t.params.at(0) == X) { width = width * -1; }
-                if(t.params.at(0) == Y) { length = length * -1; }
+                if(t.params.at(0) == X) { length = length * -1; }
+                if(t.params.at(0) == Y) { width = width * -1; }
             } else if(t.type == T) {
                 xpos += t.params.at(0);
                 ypos += t.params.at(1);
