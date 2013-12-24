@@ -10,7 +10,7 @@ GraphicsSceneLG::GraphicsSceneLG(QGraphicsScene *g)
 
 void GraphicsSceneLG::rect(qint64 length, qint64 width, qint64 xpos, qint64 ypos, qint64 rotation)
 {
-    QGraphicsItem* i = gs->addRect(xpos, ypos, length, width);
+    QGraphicsItem* i = gs->addRect(xpos-(length/2), ypos-(width/2), length, width);
     i->setRotation(rotation);
     i->setFlag(QGraphicsItem::ItemIsFocusable);
 }
