@@ -21,6 +21,7 @@ public:
 
 	void addRect(QString layer, qint64 length, qint64 width, qint64 xpos, qint64 ypos, qint64 rotation = 0);
 
+	QMap<QString, qint64> countObjs();
 	void render(LayerGraphics* lg, QString layer = "", qint64 l = 0);
 
 private:
