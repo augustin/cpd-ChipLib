@@ -11,7 +11,7 @@ typedef QList<Point> PointList;
 class LayerGraphics
 {
 public:
-    virtual void rect(qint64 length, qint64 width, qint64 xpos, qint64 ypos, qint64 rotation = 0) = 0;
+    virtual void rect(qint64 length, qint64 width, qint64 xpos, qint64 ypos) = 0;
     virtual void line(PointList p) = 0;
 };
 
