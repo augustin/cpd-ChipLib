@@ -19,8 +19,8 @@ enum Token {
 };
 enum TransType {
     M = 'M', /* mirror */
-        X = 'X', /* X (for "mirror") */
-        Y = 'Y', /* Y (for "mirror") */
+    X = 'X', /* X (for "mirror") */
+    Y = 'Y', /* Y (for "mirror") */
     R = 'R',  /* rotate */
     T = 'T' /* translate */
 };
@@ -55,19 +55,19 @@ private:
 
 class Interpreter {
 public:
-	static bool run(Chip *chip, Cif::File* file);
+    static bool run(Chip *chip, Cif::File* file);
 
 private:
-	/* private parser stuff */
-	struct interp_Transform {
-		TransType type;
-		QList<qint64> params;
-	};
+    /* private parser stuff */
+    struct interp_Transform {
+        TransType type;
+        QList<qint64> params;
+    };
 
-	static bool subroutine(Chip *chip, Cif::File* file, File::Subroutine func, QList<qint64> params = QList<qint64>());
+    static bool subroutine(Chip *chip, Cif::File* file, File::Subroutine func, QList<qint64> params = QList<qint64>());
     static QList<ChipObject*> command(Chip *chip, Cif::File* file, File::Command cmd, QList<interp_Transform> trans = QList<interp_Transform>());
 
-	static ChipLayer* layer;
+    static ChipLayer* layer;
 };
 
 }
