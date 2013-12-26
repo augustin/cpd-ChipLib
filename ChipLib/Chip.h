@@ -15,7 +15,7 @@ enum ObjType {
 
 struct ChipObject {
     ObjType type; /* all */
-    qint64 x, y, w, l, r; /* RECT */
+    qint64 x, y, w, l; /* RECT */
     PointList points; /* WIRE, POLYGON */
 };
 
@@ -27,7 +27,7 @@ public:
 	inline QString name() { return layerName; }
 
 	ChipObject* addRect(qint64 length, qint64 width, qint64 xpos, qint64 ypos, qint64 rotation = 0);
-    ChipObject* addLine(PointList points, qint64 w);
+    ChipObject* addLine(PointList points, qint64 width);
 
 private:
 	QString layerName;

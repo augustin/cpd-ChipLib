@@ -5,10 +5,9 @@
 PainterLG::PainterLG(QPainter *painter)
 {
     p = painter;
-
 }
 
-void PainterLG::rect(qint64 length, qint64 width, qint64 xpos, qint64 ypos, qint64 rotation)
+void PainterLG::rect(qint64 length, qint64 width, qint64 xpos, qint64 ypos)
 {
-	p->drawRect(xpos, ypos, length, width);
+    p->drawRect(xpos, ypos, length, width);
 }

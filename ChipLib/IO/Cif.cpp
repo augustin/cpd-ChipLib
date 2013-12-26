@@ -54,7 +54,10 @@ File::Command Reader::readCommand(QString l, int lineNum, bool* worked)
         ret.params.append(objs[2].toInt());
         ret.params.append(objs[3].toInt());
         ret.params.append(objs[4].toInt());
-        if(objs.length() == 6) { ret.params.append(objs[5].toInt()); qDebug("hi"); }
+        if((objs.length() == 6) && ((objs[5].toInt() % 90) == 0)) {
+            ret.params.append(objs[5].toInt());
+            LOG("ERR", lineNum+1, "Rotations are unsupported (yet)!");
+        }
         break;
     case ROUNDFLASH:
         ret.token = ROUNDFLASH;

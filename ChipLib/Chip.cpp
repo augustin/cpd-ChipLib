@@ -6,20 +6,24 @@ ChipObject* ChipLayer::addRect(qint64 length, qint64 width, qint64 xpos, qint64 
 {
     ChipObject* c = new ChipObject;
     c->type = RECT;
-    c->x = xpos;
-    c->y = ypos;
-    c->w = width;
-    c->l = length;
-    c->r = rotation;
+    if(rotation != 0) {
+        //int rot = rotation / 90;
+        LOG("WARN", -1, "Rotations are unsupported (yet)!");
+    } else {
+        c->x = xpos;
+        c->y = ypos;
+        c->w = width;
+        c->l = length;
+    }
     append(c);
     return c;
 }
-ChipObject* ChipLayer::addLine(PointList points, qint64 w)
+ChipObject* ChipLayer::addLine(PointList points, qint64 width)
 {
     ChipObject* c = new ChipObject;
     c->type = LINE;
     c->points.append(points);
-    c->r = 0;
+    c->w = width;
     append(c);
     return c;
 }
@@ -82,7 +86,7 @@ void Chip::render(LayerGraphics *lg, QString layer, qint64 l)
     for(qint64 i = 0; i < limit; i++) {
         ChipObject* c = objects->at(i);
         if(c->type == RECT) {
-            lg->rect(c->l, c->w, c->x, c->y, c->r);
+            lg->rect(c->l, c->w, c->x, c->y);
         } else if(c->type == LINE) {
             lg->line(c->points);
         }
