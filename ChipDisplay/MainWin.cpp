@@ -1,13 +1,13 @@
 #include "MainWin.h"
 #include "ui_MainWin.h"
 
+#include "Chip.h"
+
 #include <QGLWidget>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QGraphicsItem>
 #include <QSvgGenerator>
-
-#include <Chip.h>
 
 #include "PainterLG.h"
 #include "GraphicsSceneLG.h"
@@ -36,17 +36,22 @@ MainWin::~MainWin()
 void MainWin::on_actionOpen_CIF_triggered()
 {
     ui->graphicsView->setVisible(false);
+    ui->graphicsView->scene()->clear();
+
     QString filename = QFileDialog::getOpenFileName(this, "Select CIF file");
     if(filename.size()) {
         Chip* c = new Chip;
         c->load(filename);
         QMap<QString, qint64> counts = c->countObjs();
+        /*
         QLocale l = QLocale::system();
         foreach(QString key, counts.keys()) {
             qDebug(QString("%1\t%2").arg(key).arg(l.toString(counts.value(key))).toUtf8().constData());
-        }
+        }*/
         c->render(new GraphicsSceneLG(ui->graphicsView->scene()), "", 12000);
+        delete c;
     }
+
     ui->graphicsView->setVisible(true);
 }
 
