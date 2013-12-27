@@ -9,7 +9,7 @@
 #include "LayerGraphics.h"
 
 enum ObjType {
-    RECT,
+    RECTANGLE,
     LINE
 };
 
