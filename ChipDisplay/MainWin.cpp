@@ -75,3 +75,8 @@ void MainWin::focusItemChanged(QGraphicsItem*newItm,QGraphicsItem*,Qt::FocusReas
                              .arg(newItm->rotation()),
                              QMessageBox::Ok);
 }
+
+void MainWin::on_actionAbout_ChipLib_triggered()
+{
+    QMessageBox::information(this, tr("ChipLib version"), tr("ChipLib %1").arg(CHIPLIB_VER), QMessageBox::Ok);
+}

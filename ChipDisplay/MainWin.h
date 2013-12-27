@@ -21,6 +21,7 @@ private slots:
     void on_actionOpen_CIF_triggered();
     void on_horizontalSlider_sliderMoved(int position);
     void focusItemChanged(QGraphicsItem*newItm, QGraphicsItem*, Qt::FocusReason);
+    void on_actionAbout_ChipLib_triggered();
 
 private:
     Ui::MainWin *ui;
