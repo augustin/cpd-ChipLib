@@ -5,7 +5,7 @@
 ChipObject* ChipLayer::addRect(qint64 length, qint64 width, qint64 xpos, qint64 ypos, qint64 rotation)
 {
     ChipObject* c = new ChipObject;
-    c->type = RECT;
+    c->type = RECTANGLE;
     if(rotation != 0) {
         //int rot = rotation / 90;
         LOG("WARN", -1, "Rotations are unsupported (yet)!");
@@ -85,7 +85,7 @@ void Chip::render(LayerGraphics *lg, QString layer, qint64 l)
     }
     for(qint64 i = 0; i < limit; i++) {
         ChipObject* c = objects->at(i);
-        if(c->type == RECT) {
+        if(c->type == RECTANGLE) {
             lg->rect(c->l, c->w, c->x, c->y);
         } else if(c->type == LINE) {
             lg->line(c->points);

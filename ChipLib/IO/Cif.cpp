@@ -140,7 +140,6 @@ bool Interpreter::run(Chip *chip, Cif::File* file)
 bool Interpreter::subroutine(Chip* chip, Cif::File* file, File::Subroutine func, QList<qint64> params)
 {
     QList<interp_Transform> trans;
-    bool containsR;
     for(int i = 1; i < params.size(); i+=2) {
         switch(params.at(i)) {
         case M:
@@ -159,7 +158,6 @@ bool Interpreter::subroutine(Chip* chip, Cif::File* file, File::Subroutine func,
             t.params.append(params.at(i+2));
             trans.append(t);
             i += 1;
-            containsR = true;
         }
             continue;
         case T:
@@ -178,23 +176,29 @@ bool Interpreter::subroutine(Chip* chip, Cif::File* file, File::Subroutine func,
     }
     QList<ChipObject*> items;
     foreach(File::Command c, func.commands) {
-        items.append(command(chip, file, c, trans));
+        items.append(command(chip, file, c));
     }
 
     foreach(ChipObject* itm, items) {
-
-    }
-
-    foreach(interp_Transform t, trans) {
-        if(t.type == R) {
-            // TODO
+        if(itm->type != RECTANGLE) { continue; }
+        foreach(interp_Transform t, trans) {
+            if(t.type == R) {
+                // TODO
+            } else if(t.type == M) {
+                if(t.params.at(0) == X) { itm->x *= -1; }
+                if(t.params.at(0) == Y) { itm->y *= -1; }
+            } else if(t.type == T) {
+                itm->x += t.params.at(0);
+                itm->y += t.params.at(1);
+            }
         }
     }
+
     return true;
 }
 
 /* ::command -- parses all the things in the command, adds them to chip, and returns what it added */
-QList<ChipObject*> Interpreter::command(Chip* chip, Cif::File* file, File::Command cmd, QList<interp_Transform> trans)
+QList<ChipObject*> Interpreter::command(Chip* chip, Cif::File* file, File::Command cmd)
 {
     QList<ChipObject*> ret;
     switch(cmd.token) {
@@ -205,15 +209,6 @@ QList<ChipObject*> Interpreter::command(Chip* chip, Cif::File* file, File::Comma
                 xpos  = cmd.params[2],
                 ypos  = cmd.params[3],
                 rot   = (cmd.params.size() == 5) ? cmd.params[4] : 0;
-        foreach(interp_Transform t, trans) {
-            if(t.type == M) {
-                if(t.params.at(0) == X) { length = length * -1; }
-                if(t.params.at(0) == Y) { width = width * -1; }
-            } else if(t.type == T) {
-                xpos += t.params.at(0);
-                ypos += t.params.at(1);
-            } // ignoring R type, it's handled by the caller
-        }
         ret.append(layer->addRect(length, width, xpos, ypos, rot));
     }
         break;
