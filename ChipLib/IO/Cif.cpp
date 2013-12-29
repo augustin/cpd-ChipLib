@@ -1,5 +1,7 @@
 #include "Cif.h"
 
+#include <math.h>
+
 namespace Cif {
 File* Reader::Read(QString data)
 {
@@ -154,8 +156,7 @@ bool Interpreter::subroutine(Chip* chip, Cif::File* file, File::Subroutine func,
         {
             interp_Transform t;
             t.type = R;
-            t.params.append(params.at(i+1));
-            t.params.append(params.at(i+2));
+            t.params.append(atan2(params.at(i+2), params.at(i+1))*180/M_PI);
             trans.append(t);
             i += 1;
         }
@@ -183,7 +184,15 @@ bool Interpreter::subroutine(Chip* chip, Cif::File* file, File::Subroutine func,
         if(itm->type != RECTANGLE) { continue; }
         foreach(interp_Transform t, trans) {
             if(t.type == R) {
-                // TODO
+                int deg = t.params.at(0);
+                qint64 x = itm->x, y = itm->y;
+                itm->x = cos(deg*M_PI/180)*x + cos((deg+90)*M_PI/180)*y;
+                itm->y = sin((deg+90)*M_PI/180)*y + sin(deg*M_PI/180)*x;
+                if((deg == 90) || (deg == -90)) {
+                    qint64 w = itm->w, l = itm->l;
+                    itm->l = w;
+                    itm->w = l;
+                }
             } else if(t.type == M) {
                 if(t.params.at(0) == X) { itm->x *= -1; }
                 if(t.params.at(0) == Y) { itm->y *= -1; }
