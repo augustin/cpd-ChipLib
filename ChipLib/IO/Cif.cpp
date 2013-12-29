@@ -218,6 +218,7 @@ QList<ChipObject*> Interpreter::command(Chip* chip, Cif::File* file, File::Comma
                 xpos  = cmd.params[2],
                 ypos  = cmd.params[3],
                 rot   = (cmd.params.size() == 5) ? cmd.params[4] : 0;
+        if(rot != 0) { qDebug("rotation not supported!"); }
         ret.append(layer->addRect(length, width, xpos, ypos, rot));
     }
         break;
