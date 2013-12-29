@@ -18,8 +18,8 @@ MainWin::MainWin(QWidget *parent) :
 {
     ui->setupUi(this);
     last = 0;
-    ui->graphicsView->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
-    ui->graphicsView->setDragMode(QGraphicsView::RubberBandDrag);
+
+    //ui->graphicsView->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
     ui->graphicsView->setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers)));
     ui->graphicsView->setScene(new QGraphicsScene(ui->graphicsView));
     ui->graphicsView->scale(1.0,-1.0);
@@ -35,21 +35,21 @@ MainWin::~MainWin()
 
 void MainWin::on_actionOpen_CIF_triggered()
 {
-    ui->graphicsView->setVisible(false);
-    ui->graphicsView->scene()->clear();
-
     QString filename = QFileDialog::getOpenFileName(this, "Select CIF file");
     if(filename.size()) {
-        Chip* c = new Chip;
+        ui->graphicsView->scene()->clear();
+        c = new Chip;
         c->load(filename);
-        QMap<QString, qint64> counts = c->countObjs();
         /*
+        QMap<QString, qint64> counts = c->countObjs();
         QLocale l = QLocale::system();
         foreach(QString key, counts.keys()) {
             qDebug(QString("%1\t%2").arg(key).arg(l.toString(counts.value(key))).toUtf8().constData());
-        }*/
-        c->render(new GraphicsSceneLG(ui->graphicsView->scene()), "", 12000);
-        delete c;
+        }
+        */
+        ui->layersCmb->clear();
+        ui->layersCmb->insertItems(0, c->layers);
+        on_btnUpdate_clicked();
     }
 
     ui->graphicsView->setVisible(true);
@@ -79,4 +79,14 @@ void MainWin::focusItemChanged(QGraphicsItem*newItm,QGraphicsItem*,Qt::FocusReas
 void MainWin::on_actionAbout_ChipLib_triggered()
 {
     QMessageBox::information(this, tr("ChipLib version"), tr("ChipLib %1").arg(CHIPLIB_VER), QMessageBox::Ok);
+}
+
+void MainWin::on_btnUpdate_clicked()
+{
+    ui->graphicsView->scene()->clear();
+    if(ui->layerChk->isChecked()) {
+        c->render(new GraphicsSceneLG(ui->graphicsView->scene()), ui->layersCmb->currentText(), ui->itemsSpin->value());
+    } else {
+        c->render(new GraphicsSceneLG(ui->graphicsView->scene()), "", ui->itemsSpin->value());
+    }
 }

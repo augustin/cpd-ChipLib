@@ -8,6 +8,7 @@ class QGraphicsItem;
 namespace Ui {
 class MainWin;
 }
+class Chip;
 
 class MainWin : public QMainWindow
 {
@@ -23,9 +24,12 @@ private slots:
     void focusItemChanged(QGraphicsItem*newItm, QGraphicsItem*, Qt::FocusReason);
     void on_actionAbout_ChipLib_triggered();
 
+    void on_btnUpdate_clicked();
+
 private:
     Ui::MainWin *ui;
     QGraphicsItem* last;
+    Chip* c;
 };
 
 #endif // MAINWIN_H

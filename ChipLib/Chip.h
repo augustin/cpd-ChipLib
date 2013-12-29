@@ -43,9 +43,9 @@ public:
 
     QMap<QString, qint64> countObjs();
     void render(LayerGraphics* lg, QString layer = "", qint64 l = 0);
+    QStringList layers;
 
 private:
-    QStringList layers;
     QMap<QString, ChipLayer*> objectsForLayers;
 };
 
