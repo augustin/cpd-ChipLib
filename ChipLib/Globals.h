@@ -5,7 +5,7 @@ class QGraphicsView;
 class QString;
 class QByteArray;
 
-#define CHIPLIB_VER "0.1.0-devel"
+#define CHIPLIB_VER "0.2.1"
 #define LOG(type, line, desc) qDebug("%s:\t%d\t%s", type, line, qPrintable(desc))
 
 QByteArray qFileGetContents(QString fileName);
