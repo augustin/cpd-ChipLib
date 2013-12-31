@@ -48,11 +48,11 @@ ChipLayer* Chip::layer(QString name)
     }
 }
 
-QMap<QString, qint64> Chip::countObjs()
+QMap<qint64, QString> Chip::countObjs()
 {
-    QMap<QString, qint64> ret;
+    QMap<qint64, QString> ret;
     foreach(QString key, objectsForLayers.keys()) {
-        ret.insert(key, objectsForLayers.value(key)->size());
+        ret.insert(objectsForLayers.value(key)->size(), key);
     }
     return ret;
 }

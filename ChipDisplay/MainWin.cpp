@@ -40,15 +40,16 @@ void MainWin::on_actionOpen_CIF_triggered()
         ui->graphicsView->scene()->clear();
         c = new Chip;
         c->load(filename);
-        /*
-        QMap<QString, qint64> counts = c->countObjs();
-        QLocale l = QLocale::system();
-        foreach(QString key, counts.keys()) {
-            qDebug(QString("%1\t%2").arg(key).arg(l.toString(counts.value(key))).toUtf8().constData());
-        }
-        */
+        QMap<qint64, QString> counts = c->countObjs();
         ui->layersCmb->clear();
-        ui->layersCmb->insertItems(0, c->layers);
+        QLocale l = QLocale::system();
+        foreach(qint64 key, counts.keys()) {
+            QString str("%1\t%2");
+            str = str.arg(counts.value(key)).arg(l.toString(key));
+            ui->layersCmb->insertItem(0, str);
+            //qDebug(qPrintable(str));
+        }
+        ui->layersCmb->setCurrentIndex(0);
         on_btnUpdate_clicked();
     }
 
@@ -85,7 +86,7 @@ void MainWin::on_btnUpdate_clicked()
 {
     ui->graphicsView->scene()->clear();
     if(ui->layerChk->isChecked()) {
-        c->render(new GraphicsSceneLG(ui->graphicsView->scene()), ui->layersCmb->currentText(), ui->itemsSpin->value());
+        c->render(new GraphicsSceneLG(ui->graphicsView->scene()), ui->layersCmb->currentText().split("\t").at(0), ui->itemsSpin->value());
     } else {
         c->render(new GraphicsSceneLG(ui->graphicsView->scene()), "", ui->itemsSpin->value());
     }
