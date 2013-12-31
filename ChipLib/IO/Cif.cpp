@@ -139,9 +139,10 @@ bool Interpreter::run(Chip *chip, Cif::File* file)
 /**************************************************************
  **************** PRIVATE INTERP STUFFS! **********************
  **************************************************************/
-bool Interpreter::subroutine(Chip* chip, Cif::File* file, File::Subroutine func, QList<qint64> params)
+bool Interpreter::subroutine(Chip* chip, Cif::File* file, File::Subroutine func, QList<qint64> params, QList<interp_Transform> transforms)
 {
     QList<interp_Transform> trans;
+    trans.append(transforms);
     for(int i = 1; i < params.size(); i+=2) {
         switch(params.at(i)) {
         case M:
@@ -177,7 +178,7 @@ bool Interpreter::subroutine(Chip* chip, Cif::File* file, File::Subroutine func,
     }
     QList<ChipObject*> items;
     foreach(File::Command c, func.commands) {
-        items.append(command(chip, file, c));
+        items.append(command(chip, file, c, trans));
     }
 
     foreach(ChipObject* itm, items) {
@@ -207,7 +208,7 @@ bool Interpreter::subroutine(Chip* chip, Cif::File* file, File::Subroutine func,
 }
 
 /* ::command -- parses all the things in the command, adds them to chip, and returns what it added */
-QList<ChipObject*> Interpreter::command(Chip* chip, Cif::File* file, File::Command cmd)
+QList<ChipObject*> Interpreter::command(Chip* chip, Cif::File* file, File::Command cmd, QList<interp_Transform> trans)
 {
     QList<ChipObject*> ret;
     switch(cmd.token) {
@@ -239,7 +240,7 @@ QList<ChipObject*> Interpreter::command(Chip* chip, Cif::File* file, File::Comma
         layer = chip->layer(cmd.name);
         break;
     case CALL:
-        subroutine(chip, file, file->subroutines.value(cmd.params.at(0)), cmd.params);
+        subroutine(chip, file, file->subroutines.value(cmd.params.at(0)), cmd.params, trans);
         break;
     default:
         LOG("ERR", -1, QString("Token '%1' not implemented!").arg(QChar(cmd.token)));

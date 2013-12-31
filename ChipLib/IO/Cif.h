@@ -64,8 +64,11 @@ private:
         QList<qint64> params;
     };
 
-    static bool subroutine(Chip *chip, Cif::File* file, File::Subroutine func, QList<qint64> params = QList<qint64>());
-    static QList<ChipObject*> command(Chip *chip, Cif::File* file, File::Command cmd);
+    static bool subroutine(Chip *chip, Cif::File* file, File::Subroutine func,
+                           QList<qint64> params = QList<qint64>(),
+                           QList<interp_Transform> transforms = QList<interp_Transform>());
+    static QList<ChipObject*> command(Chip *chip, Cif::File* file, File::Command cmd,
+                                      QList<interp_Transform> trans = QList<interp_Transform>());
 
     static ChipLayer* layer;
 };
