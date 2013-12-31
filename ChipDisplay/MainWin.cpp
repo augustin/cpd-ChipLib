@@ -40,6 +40,10 @@ void MainWin::on_actionOpen_CIF_triggered()
         ui->graphicsView->scene()->clear();
         c = new Chip;
         c->load(filename);
+
+        QFileInfo f(filename);
+        this->setWindowTitle(QString("%1 - ChipDisplay").arg(f.fileName()));
+
         QMap<qint64, QString> counts = c->countObjs();
         ui->layersCmb->clear();
         QLocale l = QLocale::system();
