@@ -41,7 +41,7 @@ public:
     void load(QString fileName);
     ChipLayer* layer(QString name);
 
-    QMap<QString, qint64> countObjs();
+    QMap<qint64, QString> countObjs();
     void render(LayerGraphics* lg, QString layer = "", qint64 l = 0);
     QStringList layers;
 
