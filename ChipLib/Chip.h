@@ -26,7 +26,7 @@ public:
 
     inline QString name() { return layerName; }
 
-    ChipObject* addRect(qint64 length, qint64 width, qint64 xpos, qint64 ypos, qint64 rotation = 0);
+    ChipObject* addRect(qint64 length, qint64 width, qint64 xpos, qint64 ypos);
     ChipObject* addLine(PointList points, qint64 width);
 
 private:

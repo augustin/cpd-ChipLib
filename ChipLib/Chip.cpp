@@ -2,19 +2,14 @@
 
 #include "IO/Cif.h"
 
-ChipObject* ChipLayer::addRect(qint64 length, qint64 width, qint64 xpos, qint64 ypos, qint64 rotation)
+ChipObject* ChipLayer::addRect(qint64 length, qint64 width, qint64 xpos, qint64 ypos)
 {
     ChipObject* c = new ChipObject;
     c->type = RECTANGLE;
-    if(rotation != 0) {
-        //int rot = rotation / 90;
-        LOG("WARN", -1, "Rotations are unsupported (yet)!");
-    } else {
-        c->x = xpos;
-        c->y = ypos;
-        c->w = width;
-        c->l = length;
-    }
+    c->x = xpos;
+    c->y = ypos;
+    c->w = width;
+    c->l = length;
     append(c);
     return c;
 }
