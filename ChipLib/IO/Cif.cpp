@@ -142,7 +142,6 @@ bool Interpreter::run(Chip *chip, Cif::File* file)
 bool Interpreter::subroutine(Chip* chip, Cif::File* file, File::Subroutine func, QList<qint64> params, QList<interp_Transform> transforms)
 {
     QList<interp_Transform> trans;
-    trans.append(transforms);
     for(int i = 1; i < params.size(); i+=2) {
         switch(params.at(i)) {
         case M:
@@ -176,6 +175,8 @@ bool Interpreter::subroutine(Chip* chip, Cif::File* file, File::Subroutine func,
             LOG("ERR", -1, "Unexpected transform type!");
         }
     }
+    trans.append(transforms);
+
     QList<ChipObject*> items;
     foreach(File::Command c, func.commands) {
         items.append(command(chip, file, c, trans));
