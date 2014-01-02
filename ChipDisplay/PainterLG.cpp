@@ -8,17 +8,31 @@ PainterLG::PainterLG(QPainter *painter)
     p->scale(1.0, -1.0);
 }
 
-void PainterLG::rect(qint64 length, qint64 width, qint64 xpos, qint64 ypos)
+void PainterLG::line(PointList pnts, qint64 w)
 {
-    p->drawRect(xpos-(length/2), ypos-(width/2), length, width);
-}
-
-void PainterLG::line(PointList pnts)
-{
-    QPainterPath path(QPointF(pnts[0].first, pnts[0].second));
-    foreach(Point pnt, pnts) {
-        path.lineTo(pnt.first, pnt.second);
+    QPainterPath path(QPointF(pnts[0]->x, pnts[0]->y));
+    for(int i = 1; i < pnts.size(); i++) {
+        Point* pnt = pnts.at(i);
+        path.lineTo(pnt->x, pnt->y);
     }
+
+    QPen pen;
+    pen.setWidth(w);
+    //p->setPen(pen);
     p->drawPath(path);
 }
 
+void PainterLG::poly(PointList pnts, qint64 w)
+{
+    QPainterPath path(QPointF(pnts[0]->x, pnts[0]->y));
+    for(int i = 1; i < pnts.size(); i++) {
+        Point* pnt = pnts.at(i);
+        path.lineTo(pnt->x, pnt->y);
+    }
+    path.lineTo(pnts[0]->x, pnts[0]->y);
+
+    QPen pen;
+    pen.setWidth(w);
+    //p->setPen(pen);
+    p->drawPath(path);
+}

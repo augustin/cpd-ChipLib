@@ -9,8 +9,9 @@ class GraphicsSceneLG : public LayerGraphics
 {
 public:
     GraphicsSceneLG(QGraphicsScene* g = 0);
-    void rect(qint64 length, qint64 width, qint64 xpos, qint64 ypos);
-    void line(PointList p);
+
+    void line(PointList p, qint64 w);
+    void poly(PointList p, qint64 w);
 
 private:
     QGraphicsScene* gs;

@@ -10,8 +10,8 @@ class PainterLG : public LayerGraphics
 public:
     PainterLG(QPainter* painter = 0);
 
-    virtual void rect(qint64 length, qint64 width, qint64 xpos, qint64 ypos);
-    virtual void line(PointList pnts);
+    void line(PointList pnts, qint64 w);
+    void poly(PointList pnts, qint64 w);
 
 private:
     QPainter* p;
