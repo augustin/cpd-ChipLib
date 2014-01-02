@@ -25,6 +25,7 @@ private slots:
     void on_actionAbout_ChipLib_triggered();
 
     void on_btnUpdate_clicked();
+    void on_btnDump_clicked();
 
 private:
     Ui::MainWin *ui;

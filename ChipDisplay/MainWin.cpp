@@ -7,7 +7,9 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QGraphicsItem>
+
 #include <QSvgGenerator>
+#include <QImageWriter>
 
 #include "PainterLG.h"
 #include "GraphicsSceneLG.h"
@@ -51,7 +53,6 @@ void MainWin::on_actionOpen_CIF_triggered()
             QString str("%1\t%2");
             str = str.arg(counts.value(key)).arg(l.toString(key));
             ui->layersCmb->insertItem(0, str);
-            //qDebug(qPrintable(str));
         }
         ui->layersCmb->setCurrentIndex(0);
         on_btnUpdate_clicked();
@@ -94,4 +95,24 @@ void MainWin::on_btnUpdate_clicked()
     } else {
         c->render(new GraphicsSceneLG(ui->graphicsView->scene()), "", ui->itemsSpin->value());
     }
+}
+
+void MainWin::on_btnDump_clicked()
+{
+    QString f = QFileDialog::getSaveFileName(this, tr("Dumpfile name"), "", "SVG (*.svg)");
+    QPainter p;
+    QPaintDevice* pdev;
+
+    QSvgGenerator* g = new QSvgGenerator;
+    g->setFileName(f);
+    g->setTitle("ChipLib SVG");
+    pdev = g;
+
+    p.begin(pdev);
+    if(ui->layerChk->isChecked()) {
+        c->render(new PainterLG(&p), ui->layersCmb->currentText().split("\t").at(0), ui->itemsSpin->value());
+    } else {
+        c->render(new PainterLG(&p), "", ui->itemsSpin->value());
+    }
+    p.end();
 }
