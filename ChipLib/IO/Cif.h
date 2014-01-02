@@ -3,8 +3,8 @@
 
 #include <QList>
 #include <QMap>
-#include <QVariant>
 #include <QStringList>
+
 #include "../Chip.h"
 #include "Globals.h"
 

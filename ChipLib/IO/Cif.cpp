@@ -10,7 +10,7 @@ File* Reader::Read(QString data)
     QStringList lines = data.split("\n");
     for(int i = 0; i < lines.size(); i++) {
         QString line = lines.at(i);
-        /* A "(" is apparently a comment... ? */
+        /* A "(" is a comment. */
         if(line.startsWith("(")) { continue; }
 
         if(line.startsWith("DS")) {
@@ -56,9 +56,9 @@ File::Command Reader::readCommand(QString l, int lineNum, bool* worked)
         ret.params.append(objs[2].toInt());
         ret.params.append(objs[3].toInt());
         ret.params.append(objs[4].toInt());
-        if((objs.length() == 6) && ((objs[5].toInt() % 90) == 0)) {
+        if(objs.length() == 7) {
             ret.params.append(objs[5].toInt());
-            LOG("ERR", lineNum+1, "Rotations are unsupported (yet)!");
+            ret.params.append(objs[6].toInt());
         }
         break;
     case ROUNDFLASH:
@@ -99,7 +99,7 @@ File::Command Reader::readCommand(QString l, int lineNum, bool* worked)
                     ret.params.append(T);
                     break;
                 default:
-                    LOG("ERR", lineNum+1, "Unrecognized CALL token!");
+                    LOG("ERR", lineNum+1, "Unrecognized CALL transform!");
                     i = objs.size();
                     *worked = false;
                     continue;
@@ -116,7 +116,7 @@ File::Command Reader::readCommand(QString l, int lineNum, bool* worked)
         ret.name = objs[1];
         break;
     default:
-        LOG("WARN", lineNum+1, QString("unrecognized token %1").arg(objs[0][0]));
+        LOG("WARN", lineNum+1, QString("Unrecognized token %1!").arg(objs[0][0]));
         *worked = false;
     }
     return ret;
@@ -172,7 +172,7 @@ bool Interpreter::subroutine(Chip* chip, Cif::File* file, File::Subroutine func,
         }
             continue;
         default:
-            LOG("ERR", -1, "Unexpected transform type!");
+            break;
         }
     }
     trans.append(transforms);
@@ -220,7 +220,7 @@ QList<ChipObject*> Interpreter::command(Chip* chip, Cif::File* file, File::Comma
                 xpos  = cmd.params[2],
                 ypos  = cmd.params[3],
                 rot   = (cmd.params.size() == 6) ? 1 : 0;
-        if(rot != 0) { qDebug("rotation not supported!"); }
+        if(rot != 0) { LOG("ERR", -1, "BOX rotation not supported!"); }
         ret.append(layer->addRect(length, width, xpos, ypos));
     }
         break;
