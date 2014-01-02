@@ -24,6 +24,15 @@ ChipObject* ChipLayer::addLine(PointList points, qint64 width)
     append(c);
     return c;
 }
+ChipObject* ChipLayer::addPoly(PointList points)
+{
+    ChipObject* c = new ChipObject;
+    c->type = POLYGON;
+    c->points.append(points);
+    c->w = 1;
+    append(c);
+    return c;
+}
 
 Chip::Chip()
 {

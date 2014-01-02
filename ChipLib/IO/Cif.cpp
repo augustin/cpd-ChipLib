@@ -226,6 +226,13 @@ QList<ChipObject*> Interpreter::command(Chip* chip, Cif::File* file, File::Comma
     }
         break;
     case POLYGON:
+    {
+        PointList p;
+        for(int i = 0; i < cmd.params.size(); i+=2) {
+            p.append(new Point(cmd.params[i], cmd.params[i+1]));
+        }
+        ret.append(layer->addPoly(p));
+    }
         break;
     case WIRE:
     {
