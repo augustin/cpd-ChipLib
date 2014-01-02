@@ -9,14 +9,14 @@
 #include "LayerGraphics.h"
 
 enum ObjType {
-    RECTANGLE,
-    LINE
+    LINE, /* open line */
+    POLYGON /* closed line */
 };
 
 struct ChipObject {
-    ObjType type; /* all */
-    qint64 x, y, w, l; /* RECT */
-    PointList points; /* WIRE, POLYGON */
+    ObjType type;
+    qint64 w; /* line/polygon */
+    PointList points;
 };
 
 class ChipLayer : public QList<ChipObject*>
@@ -26,7 +26,7 @@ public:
 
     inline QString name() { return layerName; }
 
-    ChipObject* addRect(qint64 length, qint64 width, qint64 xpos, qint64 ypos);
+    ChipObject* addRect(qint64 length, qint64 width, qint64 x, qint64 y);
     ChipObject* addLine(PointList points, qint64 width);
 
 private:

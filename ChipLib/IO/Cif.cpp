@@ -183,24 +183,25 @@ bool Interpreter::subroutine(Chip* chip, Cif::File* file, File::Subroutine func,
     }
 
     foreach(ChipObject* itm, items) {
-        if(itm->type != RECTANGLE) { continue; }
         foreach(interp_Transform t, trans) {
             if(t.type == R) {
                 int deg = t.params.at(0);
-                qint64 x = itm->x, y = itm->y;
-                itm->x = cos(deg*M_PI/180)*x + cos((deg+90)*M_PI/180)*y;
-                itm->y = sin((deg+90)*M_PI/180)*y + sin(deg*M_PI/180)*x;
-                if((deg == 90) || (deg == -90)) {
-                    qint64 w = itm->w, l = itm->l;
-                    itm->l = w;
-                    itm->w = l;
+                foreach(Point* p, itm->points) {
+                    qint64 x = p->x, y = p->y;
+                    p->x = cos(deg*M_PI/180)*x + cos((deg+90)*M_PI/180)*y;
+                    p->y = sin((deg+90)*M_PI/180)*y + sin(deg*M_PI/180)*x;
                 }
             } else if(t.type == M) {
-                if(t.params.at(0) == X) { itm->x *= -1; }
-                if(t.params.at(0) == Y) { itm->y *= -1; }
+                if(t.params.at(0) == X) {
+                    foreach(Point* p, itm->points) { p->x *= -1; }
+                } else if(t.params.at(0) == Y) {
+                    foreach(Point* p, itm->points) { p->y *= -1; }
+                }
             } else if(t.type == T) {
-                itm->x += t.params.at(0);
-                itm->y += t.params.at(1);
+                foreach(Point* p, itm->points) {
+                    p->x += t.params.at(0);
+                    p->y += t.params.at(1);
+                }
             }
         }
     }
@@ -230,7 +231,7 @@ QList<ChipObject*> Interpreter::command(Chip* chip, Cif::File* file, File::Comma
     {
         PointList p;
         for(int i = 1; i < cmd.params.size(); i+=2) {
-            p.append(qMakePair(cmd.params[i], cmd.params[i+1]));
+            p.append(new Point(cmd.params[i], cmd.params[i+1]));
         }
         ret.append(layer->addLine(p, cmd.params[0]));
     }

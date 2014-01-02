@@ -8,17 +8,30 @@ GraphicsSceneLG::GraphicsSceneLG(QGraphicsScene *g)
     gs = g;
 }
 
-void GraphicsSceneLG::rect(qint64 length, qint64 width, qint64 xpos, qint64 ypos)
+void GraphicsSceneLG::line(PointList p, qint64 w)
 {
-    gs->addRect(xpos-(length/2), ypos-(width/2), length, width)
-            ->setFlag(QGraphicsItem::ItemIsFocusable);
+    QPainterPath path(QPointF(p[0]->x, p[0]->y));
+    for(int i = 1; i < p.size(); i++) {
+        Point* pnt = p.at(i);
+        path.lineTo(pnt->x, pnt->y);
+    }
+
+    QPen pen;
+    pen.setWidth(w);
+    gs->addPath(path/*, pen*/)->setFlag(QGraphicsItem::ItemIsFocusable);
 }
 
-void GraphicsSceneLG::line(PointList p)
+void GraphicsSceneLG::poly(PointList p, qint64 w)
 {
-    QPainterPath path(QPointF(p[0].first, p[0].second));
-    foreach(Point pnt, p) {
-        path.lineTo(pnt.first, pnt.second);
+    QPainterPath path(QPointF(p[0]->x, p[0]->y));
+    for(int i = 1; i < p.size(); i++) {
+        Point* pnt = p.at(i);
+        path.lineTo(pnt->x, pnt->y);
     }
-    gs->addPath(path)->setFlag(QGraphicsItem::ItemIsFocusable);
+    path.lineTo(p[0]->x, p[0]->y);
+
+    QPen pen;
+    pen.setWidth(w);
+    gs->addPath(path/*, pen*/)->setFlag(QGraphicsItem::ItemIsFocusable);
 }
+
