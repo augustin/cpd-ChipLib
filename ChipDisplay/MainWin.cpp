@@ -9,7 +9,6 @@
 #include <QGraphicsItem>
 
 #include <QSvgGenerator>
-#include <QImageWriter>
 
 #include "PainterLG.h"
 #include "GraphicsSceneLG.h"
@@ -24,7 +23,7 @@ MainWin::MainWin(QWidget *parent) :
     //ui->graphicsView->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
     ui->graphicsView->setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers)));
     ui->graphicsView->setScene(new QGraphicsScene(ui->graphicsView));
-    ui->graphicsView->scale(1.0,-1.0);
+    ui->graphicsView->scale(1.0, -1.0);
 
     connect(ui->graphicsView->scene(),SIGNAL(focusItemChanged(QGraphicsItem*,QGraphicsItem*,Qt::FocusReason)),this,
             SLOT(focusItemChanged(QGraphicsItem*,QGraphicsItem*,Qt::FocusReason)));
