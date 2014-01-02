@@ -11,6 +11,7 @@ public:
     PainterLG(QPainter* painter = 0);
 
     virtual void rect(qint64 length, qint64 width, qint64 xpos, qint64 ypos);
+    virtual void line(PointList pnts);
 
 private:
     QPainter* p;
