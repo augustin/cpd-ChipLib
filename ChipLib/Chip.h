@@ -28,6 +28,7 @@ public:
 
     ChipObject* addRect(qint64 length, qint64 width, qint64 x, qint64 y);
     ChipObject* addLine(PointList points, qint64 width);
+    ChipObject* addPoly(PointList points);
 
 private:
     QString layerName;
