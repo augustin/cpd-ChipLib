@@ -39,6 +39,8 @@ class Chip
 public:
     Chip();
 
+    static QStringList supportedFormats();
+
     void load(QString fileName);
     ChipLayer* layer(QString name);
 

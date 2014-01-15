@@ -38,6 +38,11 @@ Chip::Chip()
 {
 }
 
+QStringList Chip::supportedFormats()
+{
+    return (QStringList() << "*.cif");
+}
+
 void Chip::load(QString fileName)
 {
     if(fileName.endsWith("cif", Qt::CaseInsensitive)) {
