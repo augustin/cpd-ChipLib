@@ -73,6 +73,27 @@ QMap<qint64, QString> Chip::countObjs()
     return ret;
 }
 
+QSize Chip::nativeLayerSize(QString layer)
+{
+    /* ulc = upper left corner - lrc = lower right corner */
+    ChipLayer* items = objectsForLayers.value(layer);
+    qint64 ulcX = items->at(0)->points.at(0)->x,
+            ulcY = items->at(0)->points.at(0)->y,
+            lrcX = items->at(0)->points.at(0)->x,
+            lrcY = items->at(0)->points.at(0)->y;
+    for(int i = 0; i < items->size(); i++) {
+        ChipObject* o = items->at(i);
+        foreach(Point* p, o->points) {
+            if(p->x < ulcX) { ulcX = p->x; }
+            if(p->y < ulcY) { ulcY = p->y; }
+
+            if(p->x > ulcX) { lrcX = p->x; }
+            if(p->y > ulcY) { lrcY = p->y; }
+        }
+    }
+    return QSize(lrcX - ulcX, lrcY - ulcY);
+}
+
 void Chip::render(LayerGraphics *lg, QString layer, qint64 l)
 {
     QList<ChipObject*>* objects;
@@ -80,7 +101,7 @@ void Chip::render(LayerGraphics *lg, QString layer, qint64 l)
         objects = objectsForLayers.value(layer);
     } else {
         objects = new QList<ChipObject*>;
-        foreach(QList<ChipObject*>* a, objectsForLayers.values()) {
+        foreach(ChipLayer* a, objectsForLayers.values()) {
             for(int i = 0; i < a->size(); i++) {
                 objects->append(a->at(i));
             }
