@@ -5,6 +5,7 @@
 #include <QStringList>
 #include <QMap>
 #include <QList>
+#include <QSize>
 
 #include "LayerGraphics.h"
 
@@ -45,6 +46,7 @@ public:
     ChipLayer* layer(QString name);
 
     QMap<qint64, QString> countObjs();
+    QSize nativeLayerSize(QString layer);
     void render(LayerGraphics* lg, QString layer = "", qint64 l = 0);
     QStringList layers;
 
