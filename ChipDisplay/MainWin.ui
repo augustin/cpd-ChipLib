@@ -15,6 +15,58 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
+    <item row="2" column="0">
+     <widget class="QLabel" name="label_4">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="text">
+       <string>Scale:</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QCheckBox" name="layerChk">
+      <property name="text">
+       <string>Layer</string>
+      </property>
+      <property name="checked">
+       <bool>false</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="6">
+     <widget class="QPushButton" name="btnDump">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="text">
+       <string>Dump</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="1" colspan="6">
+     <widget class="QSlider" name="horizontalSlider">
+      <property name="maximum">
+       <number>200</number>
+      </property>
+      <property name="value">
+       <number>100</number>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0" colspan="7">
+     <widget class="QGraphicsView" name="graphicsView"/>
+    </item>
     <item row="0" column="2">
      <widget class="QLabel" name="label_3">
       <property name="sizePolicy">
@@ -41,7 +93,7 @@
       </property>
      </widget>
     </item>
-    <item row="0" column="4">
+    <item row="0" column="5">
      <widget class="QPushButton" name="btnUpdate">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -57,31 +109,8 @@
     <item row="0" column="1">
      <widget class="QComboBox" name="layersCmb"/>
     </item>
-    <item row="2" column="0">
-     <widget class="QLabel" name="label_4">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="text">
-       <string>Scale:</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="0">
-     <widget class="QCheckBox" name="layerChk">
-      <property name="text">
-       <string>Layer</string>
-      </property>
-      <property name="checked">
-       <bool>false</bool>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="5">
-     <widget class="QPushButton" name="btnDump">
+    <item row="0" column="4">
+     <widget class="QCheckBox" name="chkRealWidths">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
         <horstretch>0</horstretch>
@@ -89,23 +118,7 @@
        </sizepolicy>
       </property>
       <property name="text">
-       <string>Dump</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="0" colspan="6">
-     <widget class="QGraphicsView" name="graphicsView"/>
-    </item>
-    <item row="2" column="1" colspan="5">
-     <widget class="QSlider" name="horizontalSlider">
-      <property name="maximum">
-       <number>200</number>
-      </property>
-      <property name="value">
-       <number>100</number>
-      </property>
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
+       <string>Real widths</string>
       </property>
      </widget>
     </item>

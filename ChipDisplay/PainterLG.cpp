@@ -2,10 +2,11 @@
 
 #include <QPainter>
 
-PainterLG::PainterLG(QPainter *painter)
+PainterLG::PainterLG(QPainter *painter, bool realLineWidths)
 {
     p = painter;
     p->scale(1.0, -1.0);
+    rLW = realLineWidths;
 }
 
 void PainterLG::line(PointList pnts, qint64 w)
@@ -16,10 +17,14 @@ void PainterLG::line(PointList pnts, qint64 w)
         path.lineTo(pnt->x, pnt->y);
     }
 
-    QPen pen;
-    pen.setWidth(w);
-    //p->setPen(pen);
-    p->drawPath(path);
+    if(rLW) {
+        QPen pen;
+        pen.setWidth(w);
+        p->setPen(pen);
+        p->drawPath(path);
+    } else {
+        p->drawPath(path);
+    }
 }
 
 void PainterLG::poly(PointList pnts, qint64 w)
@@ -31,8 +36,12 @@ void PainterLG::poly(PointList pnts, qint64 w)
     }
     path.lineTo(pnts[0]->x, pnts[0]->y);
 
-    QPen pen;
-    pen.setWidth(w);
-    //p->setPen(pen);
-    p->drawPath(path);
+    if(rLW) {
+        QPen pen;
+        pen.setWidth(w);
+        p->setPen(pen);
+        p->drawPath(path);
+    } else {
+        p->drawPath(path);
+    }
 }

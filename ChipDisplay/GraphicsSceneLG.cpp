@@ -3,9 +3,10 @@
 #include <QGraphicsRectItem>
 #include "Globals.h"
 
-GraphicsSceneLG::GraphicsSceneLG(QGraphicsScene *g)
+GraphicsSceneLG::GraphicsSceneLG(QGraphicsScene *g, bool realLineWidths)
 {
     gs = g;
+    rLW = realLineWidths;
 }
 
 void GraphicsSceneLG::line(PointList p, qint64 w)
@@ -16,9 +17,13 @@ void GraphicsSceneLG::line(PointList p, qint64 w)
         path.lineTo(pnt->x, pnt->y);
     }
 
-    QPen pen;
-    pen.setWidth(w);
-    gs->addPath(path/*, pen*/)->setFlag(QGraphicsItem::ItemIsFocusable);
+    if(rLW) {
+        QPen pen;
+        pen.setWidth(w);
+        gs->addPath(path, pen)->setFlag(QGraphicsItem::ItemIsFocusable);
+    } else {
+        gs->addPath(path)->setFlag(QGraphicsItem::ItemIsFocusable);
+    }
 }
 
 void GraphicsSceneLG::poly(PointList p, qint64 w)
@@ -30,8 +35,11 @@ void GraphicsSceneLG::poly(PointList p, qint64 w)
     }
     path.lineTo(p[0]->x, p[0]->y);
 
-    QPen pen;
-    pen.setWidth(w);
-    gs->addPath(path/*, pen*/)->setFlag(QGraphicsItem::ItemIsFocusable);
+    if(rLW) {
+        QPen pen;
+        pen.setWidth(w);
+        gs->addPath(path, pen)->setFlag(QGraphicsItem::ItemIsFocusable);
+    } else {
+        gs->addPath(path)->setFlag(QGraphicsItem::ItemIsFocusable);
+    }
 }
-
