@@ -41,27 +41,24 @@ MainWin::~MainWin()
 void MainWin::on_actionOpen_CIF_triggered()
 {
     QString filename = QFileDialog::getOpenFileName(this, "Select CIF file");
-    if(filename.size()) {
-        ui->graphicsView->scene()->clear();
-        c = new Chip;
-        c->load(filename);
+    if(!filename.size()) { return; }
+    ui->graphicsView->scene()->clear();
+    c = new Chip;
+    c->load(filename);
 
-        QFileInfo f(filename);
-        this->setWindowTitle(QString("%1 - ChipDisplay").arg(f.fileName()));
+    QFileInfo f(filename);
+    this->setWindowTitle(QString("%1 - ChipDisplay").arg(f.fileName()));
 
-        QMap<qint64, QString> counts = c->countObjs();
-        ui->layersCmb->clear();
-        QLocale l = QLocale::system();
-        foreach(qint64 key, counts.keys()) {
-            QString str("%1\t%2");
-            str = str.arg(counts.value(key)).arg(l.toString(key));
-            ui->layersCmb->insertItem(0, str);
-        }
-        ui->layersCmb->setCurrentIndex(0);
-        on_btnUpdate_clicked();
+    QMap<qint64, QString> counts = c->countObjs();
+    ui->layersCmb->clear();
+    QLocale l = QLocale::system();
+    foreach(qint64 key, counts.keys()) {
+        QString str("%1\t%2");
+        str = str.arg(counts.value(key)).arg(l.toString(key));
+        ui->layersCmb->insertItem(0, str);
     }
-
-    ui->graphicsView->setVisible(true);
+    ui->layersCmb->setCurrentIndex(0);
+    on_btnUpdate_clicked();
 }
 
 void MainWin::on_horizontalSlider_sliderMoved(int position)
@@ -103,6 +100,7 @@ void MainWin::on_btnUpdate_clicked()
 void MainWin::on_btnDump_clicked()
 {
     QString f = QFileDialog::getSaveFileName(this, tr("Dumpfile name"), "", "SVG (*.svg)");
+    if(!f.size()) { return; }
     QPainter p;
     QPaintDevice* pdev;
 
