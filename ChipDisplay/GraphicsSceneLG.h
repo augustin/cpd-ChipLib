@@ -8,13 +8,14 @@
 class GraphicsSceneLG : public LayerGraphics
 {
 public:
-    GraphicsSceneLG(QGraphicsScene* g = 0);
+    GraphicsSceneLG(QGraphicsScene* g = 0, bool realLineWidths = false);
 
     void line(PointList p, qint64 w);
     void poly(PointList p, qint64 w);
 
 private:
     QGraphicsScene* gs;
+    bool rLW;
 };
 
 #endif // GRAPHICSSCENELG_H

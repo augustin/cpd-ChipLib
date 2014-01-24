@@ -91,9 +91,9 @@ void MainWin::on_btnUpdate_clicked()
 {
     ui->graphicsView->scene()->clear();
     if(ui->layerChk->isChecked()) {
-        c->render(new GraphicsSceneLG(ui->graphicsView->scene()), ui->layersCmb->currentText().split("\t").at(0), ui->itemsSpin->value());
+        c->render(new GraphicsSceneLG(ui->graphicsView->scene(), ui->chkRealWidths->isChecked()), ui->layersCmb->currentText().split("\t").at(0), ui->itemsSpin->value());
     } else {
-        c->render(new GraphicsSceneLG(ui->graphicsView->scene()), "", ui->itemsSpin->value());
+        c->render(new GraphicsSceneLG(ui->graphicsView->scene(), ui->chkRealWidths->isChecked()), "", ui->itemsSpin->value());
     }
 }
 
@@ -111,9 +111,9 @@ void MainWin::on_btnDump_clicked()
 
     p.begin(pdev);
     if(ui->layerChk->isChecked()) {
-        c->render(new PainterLG(&p), ui->layersCmb->currentText().split("\t").at(0), ui->itemsSpin->value());
+        c->render(new PainterLG(&p, ui->chkRealWidths->isChecked()), ui->layersCmb->currentText().split("\t").at(0), ui->itemsSpin->value());
     } else {
-        c->render(new PainterLG(&p), "", ui->itemsSpin->value());
+        c->render(new PainterLG(&p, ui->chkRealWidths->isChecked()), "", ui->itemsSpin->value());
     }
     p.end();
 }
