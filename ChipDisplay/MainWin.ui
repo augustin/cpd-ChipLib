@@ -76,7 +76,7 @@
        <string>Layer</string>
       </property>
       <property name="checked">
-       <bool>true</bool>
+       <bool>false</bool>
       </property>
      </widget>
     </item>
@@ -144,22 +144,5 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>
- <connections>
-  <connection>
-   <sender>layerChk</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>layersCmb</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>32</x>
-     <y>42</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>113</x>
-     <y>42</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>
