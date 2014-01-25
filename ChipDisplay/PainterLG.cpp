@@ -2,19 +2,25 @@
 
 #include <QPainter>
 
-PainterLG::PainterLG(QPainter *painter, bool realLineWidths)
+PainterLG::PainterLG(QPainter *painter, bool realLineWidths, QRect bR)
 {
     p = painter;
-    p->scale(1.0, -1.0);
+
+	p->scale(1.0/SCALE_FACTOR, -1.0/SCALE_FACTOR);
+	QTransform move;
+	move.translate(-bR.left(), -bR.top()+1);
+	p->setTransform(move, true);
+	p->setBrush(QBrush(QColor(0, 0, 0, 100)));
+
     rLW = realLineWidths;
 }
 
 void PainterLG::line(PointList pnts, qint64 w)
 {
-    QPainterPath path(QPointF(pnts[0]->x, pnts[0]->y));
+	QPainterPath path(QPointF(pnts[0]->x, pnts[0]->y));
     for(int i = 1; i < pnts.size(); i++) {
         Point* pnt = pnts.at(i);
-        path.lineTo(pnt->x, pnt->y);
+		path.lineTo(pnt->x, pnt->y);
     }
 
     if(rLW) {
@@ -29,12 +35,12 @@ void PainterLG::line(PointList pnts, qint64 w)
 
 void PainterLG::poly(PointList pnts, qint64 w)
 {
-    QPainterPath path(QPointF(pnts[0]->x, pnts[0]->y));
+	QPainterPath path(QPointF(pnts[0]->x, pnts[0]->y));
     for(int i = 1; i < pnts.size(); i++) {
         Point* pnt = pnts.at(i);
-        path.lineTo(pnt->x, pnt->y);
+		path.lineTo(pnt->x, pnt->y);
     }
-    path.lineTo(pnts[0]->x, pnts[0]->y);
+	path.lineTo(pnts[0]->x, pnts[0]->y);
 
     if(rLW) {
         QPen pen;

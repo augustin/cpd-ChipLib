@@ -6,6 +6,7 @@
 #include <QMap>
 #include <QList>
 #include <QSize>
+#include <QRect>
 
 #include "LayerGraphics.h"
 
@@ -44,10 +45,13 @@ public:
 
     void load(QString fileName);
     ChipLayer* layer(QString name);
+	QList<ChipObject*>* getObjects(QString layer = "");
 
     QMap<qint64, QString> countObjs();
-    QSize nativeLayerSize(QString layer);
+
+	QRect boundingRect(QString layer = "");
     void render(LayerGraphics* lg, QString layer = "", qint64 l = 0);
+
     QStringList layers;
 
 private:
