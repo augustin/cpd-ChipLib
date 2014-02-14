@@ -1,6 +1,8 @@
 #include "Cif.h"
 
 #include <math.h>
+#include <QElapsedTimer>
+#include <iostream>
 
 namespace Cif {
 File* Reader::Read(QString data)
@@ -129,10 +131,17 @@ ChipLayer* Interpreter::layer;
  **************************************************************/
 bool Interpreter::run(Chip *chip, Cif::File* file)
 {
+    ensureLog();
+    QElapsedTimer t;
+    t.start();
+
     QList<ChipObject*> a;
     foreach(File::Command s, file->rootCommands) {
         a.append(command(chip, file, s));
     }
+
+    qint64 el = t.elapsed();
+    writeLog(QString("I-001: Interp took %1 ms.").arg(el));
     return true;
 }
 

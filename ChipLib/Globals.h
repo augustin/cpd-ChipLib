@@ -10,4 +10,7 @@ class QByteArray;
 
 QByteArray qFileGetContents(QString fileName);
 
+void ensureLog();
+void writeLog(QString log);
+
 #endif // CHIPLIB_GLOBALS_H
