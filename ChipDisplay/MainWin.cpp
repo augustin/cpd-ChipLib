@@ -20,9 +20,8 @@ MainWin::MainWin(QWidget *parent) :
     ui->setupUi(this);
     last = 0;
 
-#ifdef QT_NO_OPENGL
     ui->graphicsView->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
-#else
+#ifndef QT_NO_OPENGL
     ui->graphicsView->setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers)));
 #endif
 
@@ -47,7 +46,7 @@ void MainWin::on_actionOpen_CIF_triggered()
     c->load(filename);
 
     QFileInfo f(filename);
-    this->setWindowTitle(QString("%1 - ChipDisplay").arg(f.fileName()));
+    setWindowTitle(QString("%1 - ChipDisplay").arg(f.fileName()));
 
     QMap<qint64, QString> counts = c->countObjs();
     ui->layersCmb->clear();
@@ -56,6 +55,9 @@ void MainWin::on_actionOpen_CIF_triggered()
         QString str("%1\t%2");
         str = str.arg(counts.value(key)).arg(l.toString(key));
         ui->layersCmb->insertItem(0, str);
+
+        QRect br = c->boundingRect(counts.value(key));
+        qDebug(qPrintable(QString("%5 x %1 y %2 w %3 h %4").arg(br.x()).arg(br.y()).arg(br.width()).arg(br.height()).arg(counts.value(key))));
     }
     ui->layersCmb->setCurrentIndex(0);
     on_btnUpdate_clicked();
@@ -73,12 +75,11 @@ void MainWin::focusItemChanged(QGraphicsItem*newItm,QGraphicsItem*,Qt::FocusReas
     if(!newItm) { return; }
     if(last && (last->boundingRect().x() == newItm->boundingRect().x())) { return; }
     last = newItm;
-    QMessageBox::information(this,"info",QString("x: %1\ny: %2\nw: %3\nh: %4\nr: %5")
+    QMessageBox::information(this,"info",QString("x: %1\ny: %2\nw: %3\nh: %4\n")
                              .arg(newItm->boundingRect().x())
                              .arg(newItm->boundingRect().y())
                              .arg(newItm->boundingRect().width())
-                             .arg(newItm->boundingRect().height())
-                             .arg(newItm->rotation()),
+                             .arg(newItm->boundingRect().height()),
                              QMessageBox::Ok);
 }
 
