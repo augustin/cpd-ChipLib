@@ -26,8 +26,8 @@ int main(int argc, char *argv[])
 			qDebug("[%s] Loaded chip %s.", qPrintableTime(t.elapsed()), qPrintable(QFileInfo(arg).fileName()));
 
 			QRect bR = c->boundingRect();
-			QImage img(abs(bR.width()/SCALE_FACTOR), abs(bR.height()/SCALE_FACTOR), QImage::Format_ARGB4444_Premultiplied);
-			img.fill(Qt::white);
+			QImage img(abs(bR.width()/SCALE_FACTOR), abs(bR.height()/SCALE_FACTOR), QImage::Format_MonoLSB);
+			img.fill(QColor(Qt::white).toRgb());
 			QPainter p;
 			qDebug("[%s] Created image object with size %dx%d.", qPrintableTime(t.elapsed()), abs(bR.width()/SCALE_FACTOR), abs(bR.height()/SCALE_FACTOR));
 
@@ -36,9 +36,8 @@ int main(int argc, char *argv[])
 			p.end();
 			qDebug("[%s] Rendered.", qPrintableTime(t.elapsed()));
 
-			img.save(arg + ".png");
+			img.save(arg + ".bmp");
 			qDebug("[%s] Saved %s.\n", qPrintableTime(t.elapsed()), qPrintable(arg + ".png"));
-			t.invalidate();
 		}
 	}
 

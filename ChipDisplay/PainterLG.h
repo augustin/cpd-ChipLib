@@ -4,7 +4,7 @@
 #include <LayerGraphics.h>
 #include <QRect>
 
-#define SCALE_FACTOR 50
+#define SCALE_FACTOR 30
 
 class QPainter;
 
