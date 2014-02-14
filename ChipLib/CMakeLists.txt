@@ -1,9 +1,8 @@
 project(ChipLib)
-include_directories(BEFORE ${CMAKE_CURRENT_SOURCE_DIR})
 
-set(SRCS ${CMAKE_CURRENT_SOURCE_DIR}/IO/Cif.cpp
-         ${CMAKE_CURRENT_SOURCE_DIR}/Chip.cpp
-         ${CMAKE_CURRENT_SOURCE_DIR}/Globals.cpp
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+
+set(SRCS IO/Cif.cpp Chip.cpp Globals.cpp
          ../ChipDisplay/PainterLG.cpp)
 
 add_library(ChipLib SHARED ${SRCS} ${MOC_SRCS})
