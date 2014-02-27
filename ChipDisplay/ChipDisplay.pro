@@ -15,17 +15,14 @@ include(../ChipLib/ChipLib.pri)
 SOURCES += Main.cpp \
 		MainWin.cpp \
     GraphicsSceneLG.cpp \
-    PainterLG.cpp
+    PainterLG.cpp \
+    GDLG.cpp
 
 HEADERS  += MainWin.h \
     GraphicsSceneLG.h \
-    PainterLG.h
+    PainterLG.h \
+    GDLG.h
 
 FORMS    += MainWin.ui
 
-# https://qt-project.org/forums/viewthread/16833
-QMAKE_CXXFLAGS_RELEASE -= -O2
-QMAKE_CXXFLAGS_RELEASE += -O3
-
-QMAKE_LFLAGS_RELEASE -= -O1
-
+LIBS += -lgd
