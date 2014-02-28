@@ -4,16 +4,21 @@
 #include <LayerGraphics.h>
 #include <QRect>
 
-#define SCALE_FACTOR 1
-
 #include <gd.h>
+
+struct PixelData {
+    char* pixels;
+    int width;
+    int height;
+};
 
 class GDLG : public LayerGraphics
 {
 public:
-    GDLG(bool a = false, QRect bR = QRect());
+    GDLG(QRect bR = QRect(), int scaleFactor = 1);
     ~GDLG();
 
+    PixelData getPixels();
     void writeFile(QString filename);
 
     void line(PointList pnts, qint64 w);
