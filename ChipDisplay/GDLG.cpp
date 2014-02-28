@@ -4,14 +4,14 @@
 #include <QString>
 #include <QFile>
 
-GDLG::GDLG(bool, QRect bR)
+GDLG::GDLG(QRect bR, int scaleFactor)
 {
-    im = gdImageCreate(abs(bR.width()/SCALE_FACTOR), abs(bR.height()/SCALE_FACTOR));
+    im = gdImageCreate(abs(bR.width()/scaleFactor), abs(bR.height()/scaleFactor));
     white = gdImageColorAllocate(im, 255, 255, 255);
     black = gdImageColorAllocate(im, 0, 0, 0);
 
-    xScaleFactor = 1.0/SCALE_FACTOR;
-    yScaleFactor = -1.0/SCALE_FACTOR;
+    xScaleFactor = 1.0/scaleFactor;
+    yScaleFactor = -1.0/scaleFactor;
     xShift = -bR.left();
     yShift = -bR.top()+1;
 }
@@ -53,6 +53,21 @@ void GDLG::poly(PointList pnts, qint64 w)
     gdImageFilledPolygon(im, points, pnts.size()+1, black);
 }
 
+PixelData GDLG::getPixels()
+{
+    PixelData ret;
+    ret.width = im->sx;
+    ret.height = im->sy;
+    ret.pixels = (char*)malloc(im->sx*im->sy);
+
+    int y = 0;
+    while(y < im->sy) {
+        memcpy((void*)(ret.pixels[ret.width*y]), (void*)(im->pixels[y]), im->sx);
+        y++;
+    }
+    return ret;
+}
+
 void GDLG::writeFile(QString filename)
 {
     qDebug("w:%d h:%d", im->sx, im->sy);
@@ -67,4 +82,3 @@ void GDLG::writeFile(QString filename)
     }
     f.close();
 }
-
