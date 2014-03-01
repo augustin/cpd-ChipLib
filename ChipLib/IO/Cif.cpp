@@ -157,7 +157,7 @@ bool Interpreter::subroutine(Chip* chip, Cif::File* file, File::Subroutine func,
         {
             interp_Transform t;
             t.type = M;
-            t.params.append(params.at(i+1));
+            t.tparams[0] = params.at(i+1);
             trans.append(t);
         }
             continue;
@@ -165,7 +165,7 @@ bool Interpreter::subroutine(Chip* chip, Cif::File* file, File::Subroutine func,
         {
             interp_Transform t;
             t.type = R;
-            t.params.append(atan2(params.at(i+2), params.at(i+1))*180/M_PI);
+            t.tparams[0] = atan2(params.at(i+2), params.at(i+1))*180/M_PI;
             trans.append(t);
             i += 1;
         }
@@ -174,8 +174,8 @@ bool Interpreter::subroutine(Chip* chip, Cif::File* file, File::Subroutine func,
         {
             interp_Transform t;
             t.type = T;
-            t.params.append(params.at(i+1));
-            t.params.append(params.at(i+2));
+            t.tparams[0] = params.at(i+1);
+            t.tparams[1] = params.at(i+2);
             trans.append(t);
             i += 1;
         }
@@ -194,22 +194,22 @@ bool Interpreter::subroutine(Chip* chip, Cif::File* file, File::Subroutine func,
     foreach(ChipObject* itm, items) {
         foreach(interp_Transform t, trans) {
             if(t.type == R) {
-                int deg = t.params.at(0);
+                int deg = t.tparams[0];
                 foreach(Point* p, itm->points) {
                     qint64 x = p->x, y = p->y;
                     p->x = cos(deg*M_PI/180)*x + cos((deg+90)*M_PI/180)*y;
                     p->y = sin((deg+90)*M_PI/180)*y + sin(deg*M_PI/180)*x;
                 }
             } else if(t.type == M) {
-                if(t.params.at(0) == X) {
+                if(t.tparams[0] == X) {
                     foreach(Point* p, itm->points) { p->x *= -1; }
-                } else if(t.params.at(0) == Y) {
+                } else if(t.tparams[0] == Y) {
                     foreach(Point* p, itm->points) { p->y *= -1; }
                 }
             } else if(t.type == T) {
                 foreach(Point* p, itm->points) {
-                    p->x += t.params.at(0);
-                    p->y += t.params.at(1);
+                    p->x += t.tparams[0];
+                    p->y += t.tparams[1];
                 }
             }
         }

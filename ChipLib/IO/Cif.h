@@ -61,7 +61,7 @@ private:
     /* private parser stuff */
     struct interp_Transform {
         TransType type;
-        QList<qint64> params;
+        qint64 tparams[2];
     };
 
     static bool subroutine(Chip *chip, Cif::File* file, File::Subroutine func,
