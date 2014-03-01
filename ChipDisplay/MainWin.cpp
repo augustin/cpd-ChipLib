@@ -11,6 +11,7 @@
 #include <QSvgGenerator>
 
 #include "PainterLG.h"
+#include "GDLG.h"
 #include "GraphicsSceneLG.h"
 
 MainWin::MainWin(QWidget *parent) :
@@ -19,6 +20,7 @@ MainWin::MainWin(QWidget *parent) :
 {
     ui->setupUi(this);
     last = 0;
+    c = 0;
 
     ui->graphicsView->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
 #ifndef QT_NO_OPENGL
@@ -34,6 +36,7 @@ MainWin::MainWin(QWidget *parent) :
 
 MainWin::~MainWin()
 {
+    if(c) { delete c; }
     delete ui;
 }
 
@@ -41,7 +44,9 @@ void MainWin::on_actionOpen_CIF_triggered()
 {
     QString filename = QFileDialog::getOpenFileName(this, "Select CIF file");
     if(!filename.size()) { return; }
+
     ui->graphicsView->scene()->clear();
+    if(c) { delete c; }
     c = new Chip;
     c->load(filename);
 
@@ -91,11 +96,13 @@ void MainWin::on_actionAbout_ChipLib_triggered()
 void MainWin::on_btnUpdate_clicked()
 {
     ui->graphicsView->scene()->clear();
+    GraphicsSceneLG* gslg = new GraphicsSceneLG(ui->graphicsView->scene(), ui->chkRealWidths->isChecked());
     if(ui->layerChk->isChecked()) {
-        c->render(new GraphicsSceneLG(ui->graphicsView->scene(), ui->chkRealWidths->isChecked()), ui->layersCmb->currentText().split("\t").at(0), ui->itemsSpin->value());
+        c->render(gslg, ui->layersCmb->currentText().split("\t").at(0), ui->itemsSpin->value());
     } else {
-        c->render(new GraphicsSceneLG(ui->graphicsView->scene(), ui->chkRealWidths->isChecked()), "", ui->itemsSpin->value());
+        c->render(gslg, "", ui->itemsSpin->value());
     }
+    delete gslg;
 }
 
 void MainWin::on_btnDump_clicked()
@@ -104,6 +111,7 @@ void MainWin::on_btnDump_clicked()
     if(!f.size()) { return; }
     QPainter p;
     QPaintDevice* pdev;
+    QString layer = ui->layersCmb->currentText().split("\t").at(0);
 
     QSvgGenerator* g = new QSvgGenerator;
     g->setFileName(f);
@@ -112,7 +120,13 @@ void MainWin::on_btnDump_clicked()
 
     p.begin(pdev);
     if(ui->layerChk->isChecked()) {
-        c->render(new PainterLG(&p, ui->chkRealWidths->isChecked()), ui->layersCmb->currentText().split("\t").at(0), ui->itemsSpin->value());
+        /* // GDLG renderer
+        GDLG* g = new GDLG(c->boundingRect(layer), 14);
+        c->render(g, layer, ui->itemsSpin->value());
+        g->writeFile("/media/cavalierpc/augustin/school/SFP/chip.txt");
+        delete g;
+        */
+        c->render(new PainterLG(&p, ui->chkRealWidths->isChecked()), layer, ui->itemsSpin->value());
     } else {
         c->render(new PainterLG(&p, ui->chkRealWidths->isChecked()), "", ui->itemsSpin->value());
     }

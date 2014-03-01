@@ -38,6 +38,23 @@ Chip::Chip()
 {
 }
 
+Chip::~Chip()
+{
+    foreach(QString key, objectsForLayers.keys()) {
+        ChipLayer* layer = objectsForLayers.value(key);
+        for(int i = 0; i < layer->size(); i++) {
+            ChipObject* item = layer->at(i);
+            for(int j = 0; j < item->points.size(); j++) {
+                Point* pnt = item->points.at(j);
+                delete pnt;
+            }
+            delete item;
+        }
+        delete layer;
+        objectsForLayers.remove(key);
+    }
+}
+
 QStringList Chip::supportedFormats()
 {
     return (QStringList() << "*.cif");
@@ -66,18 +83,20 @@ ChipLayer* Chip::layer(QString name)
 
 QList<ChipObject*>* Chip::getObjects(QString layer)
 {
-	QList<ChipObject*>* objects;
-	if(layer.size()) {
-		objects = objectsForLayers.value(layer);
-	} else {
-		objects = new QList<ChipObject*>;
-		foreach(ChipLayer* a, objectsForLayers.values()) {
-			for(int i = 0; i < a->size(); i++) {
-				objects->append(a->at(i));
-			}
-		}
-	}
-	return objects;
+    return objectsForLayers.value(layer);
+}
+
+QList<ChipObject*>* Chip::getAllObjects()
+{
+    QList<ChipObject*>* objects = new QList<ChipObject*>();
+
+    foreach(ChipLayer* a, objectsForLayers.values()) {
+        for(int i = 0; i < a->size(); i++) {
+            objects->append(a->at(i));
+        }
+    }
+
+    return objects;
 }
 
 QMap<qint64, QString> Chip::countObjs()
@@ -91,9 +110,16 @@ QMap<qint64, QString> Chip::countObjs()
 
 QRect Chip::boundingRect(QString layer)
 {
-    /* ulc = upper left corner - lrc = lower right corner */
-	QList<ChipObject*>* items = getObjects(layer);
+    bool doDelete = false;
+    QList<ChipObject*>* items;
+    if(layer.size()) {
+        items = getObjects(layer);
+    } else {
+        doDelete = true;
+        items = getAllObjects();
+    }
 
+    /* ulc = upper left corner - lrc = lower right corner */
 	qint64 ulcX = INT_MAX,
 		   ulcY = INT_MIN,
 		   lrcX = INT_MIN,
@@ -110,12 +136,23 @@ QRect Chip::boundingRect(QString layer)
     }
 	/*if(ulcX < 0) { ulcX = 0; }
 	if(lrcY > 0) { lrcY = 0; }*/
+
+    if(doDelete) {
+        delete items;
+    }
 	return QRect(QPoint(ulcX, ulcY), QPoint(lrcX, lrcY));
 }
 
 void Chip::render(LayerGraphics *lg, QString layer, qint64 l)
 {
-	QList<ChipObject*>* objects = getObjects(layer);
+    bool doDelete = false;
+    QList<ChipObject*>* objects;
+    if(layer.size()) {
+        objects = getObjects(layer);
+    } else {
+        doDelete = true;
+        objects = getAllObjects();
+    }
 
     qint64 limit; // =  ? l : objects->size();
     if(l < 1) { l = objects->size(); }
@@ -131,5 +168,9 @@ void Chip::render(LayerGraphics *lg, QString layer, qint64 l)
         } else if(c->type == POLYGON) {
             lg->poly(c->points, c->w);
         }
+    }
+
+    if(doDelete) {
+        delete objects;
     }
 }
