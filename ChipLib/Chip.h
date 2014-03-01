@@ -40,12 +40,15 @@ class Chip
 {
 public:
     Chip();
+    ~Chip();
 
     static QStringList supportedFormats();
 
     void load(QString fileName);
     ChipLayer* layer(QString name);
-	QList<ChipObject*>* getObjects(QString layer = "");
+
+    QList<ChipObject*>* getObjects(QString layer);
+    QList<ChipObject*>* getAllObjects();
 
     QMap<qint64, QString> countObjs();
 
