@@ -21,8 +21,8 @@ GDLG::~GDLG()
     gdImageDestroy(im);
 }
 
-#define X(x) (((x)*xScaleFactor)+xShift)
-#define Y(y) (((y)*yScaleFactor)-yShift)
+#define X(x) (((x)+xShift)*xScaleFactor)
+#define Y(y) (((y)+yShift)*yScaleFactor)
 
 void GDLG::line(PointList pnts, qint64 w)
 {
