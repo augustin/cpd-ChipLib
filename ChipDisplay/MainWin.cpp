@@ -62,7 +62,7 @@ void MainWin::on_actionOpen_CIF_triggered()
         ui->layersCmb->insertItem(0, str);
 
         QRect br = c->boundingRect(counts.value(key));
-        qDebug(qPrintable(QString("%5 x %1 y %2 w %3 h %4").arg(br.x()).arg(br.y()).arg(br.width()).arg(br.height()).arg(counts.value(key))));
+        qDebug(qPrintable(QString("%5 x %1 y %2 w %3 h %4").arg(br.x()).arg(br.y()).arg(br.width()).arg(-br.height()).arg(counts.value(key))));
     }
     ui->layersCmb->setCurrentIndex(0);
     on_btnUpdate_clicked();
