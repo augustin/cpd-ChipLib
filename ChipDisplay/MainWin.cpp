@@ -7,7 +7,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QGraphicsItem>
-
+#include <QInputDialog>
 #include <QSvgGenerator>
 
 #include "PainterLG.h"
@@ -107,28 +107,31 @@ void MainWin::on_btnUpdate_clicked()
 
 void MainWin::on_btnDump_clicked()
 {
-    QString f = QFileDialog::getSaveFileName(this, tr("Dumpfile name"), "", "SVG (*.svg)");
+    QString f = QFileDialog::getSaveFileName(this, tr("Dumpfile name"), "", "SVG (*.svg);;ChipText (*.txt)");
     if(!f.size()) { return; }
-    QPainter p;
-    QPaintDevice* pdev;
     QString layer = ui->layersCmb->currentText().split("\t").at(0);
 
-    QSvgGenerator* g = new QSvgGenerator;
-    g->setFileName(f);
-    g->setTitle("ChipLib SVG");
-    pdev = g;
-
-    p.begin(pdev);
-    if(ui->layerChk->isChecked()) {
-        /* // GDLG renderer
-        GDLG* g = new GDLG(c->boundingRect(layer), 14);
-        c->render(g, layer, ui->itemsSpin->value());
-        g->writeFile("/media/cavalierpc/augustin/school/SFP/chip.txt");
+    if(f.endsWith("txt", Qt::CaseInsensitive)) {
+        int scaleFactor = QInputDialog::getInt(
+                    this, tr("Scale factor:"), tr("Select scale factor:"), 15, 0, 30);
+        GDLG* g = new GDLG(c->boundingRect(layer), scaleFactor);
+        c->render(g, layer);
+        g->writeFile(f);
         delete g;
-        */
-        c->render(new PainterLG(&p, ui->chkRealWidths->isChecked()), layer, ui->itemsSpin->value());
     } else {
-        c->render(new PainterLG(&p, ui->chkRealWidths->isChecked()), "", ui->itemsSpin->value());
+        if(!ui->layerChk->isChecked()) {
+            layer = "";
+        }
+
+        QPainter p;
+        QSvgGenerator* g = new QSvgGenerator;
+        g->setFileName(f);
+        g->setTitle("ChipLib SVG");
+
+        p.begin(g);
+        PainterLG* lg = new PainterLG(&p, ui->chkRealWidths->isChecked());
+        c->render(lg, layer, ui->itemsSpin->value());
+        delete lg;
+        p.end();
     }
-    p.end();
 }
