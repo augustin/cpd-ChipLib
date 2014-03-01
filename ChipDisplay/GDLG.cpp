@@ -1,11 +1,17 @@
 #include "GDLG.h"
+#include "Globals.h"
 
 #include <gd.h>
 #include <QString>
 #include <QFile>
+#include <QElapsedTimer>
 
 GDLG::GDLG(QRect bR, int scaleFactor)
 {
+    ensureLog();
+    QElapsedTimer t;
+    t.start();
+
     im = gdImageCreate(abs(bR.width()/scaleFactor), abs(bR.height()/scaleFactor));
     white = gdImageColorAllocate(im, 255, 255, 255);
     black = gdImageColorAllocate(im, 0, 0, 0);
@@ -14,6 +20,9 @@ GDLG::GDLG(QRect bR, int scaleFactor)
     yScaleFactor = -1.0/scaleFactor;
     xShift = -bR.left();
     yShift = -bR.top()+1;
+
+    qint64 el = t.elapsed();
+    writeLog(QString("I-003: GDLG took %1 ms.").arg(el));
 }
 
 GDLG::~GDLG()

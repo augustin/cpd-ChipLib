@@ -7,6 +7,9 @@
 namespace Cif {
 File* Reader::Read(QString data)
 {
+    ensureLog();
+    QElapsedTimer t;
+    t.start();
     File* ret = new File;
 
     QStringList lines = data.split("\n");
@@ -44,6 +47,8 @@ File* Reader::Read(QString data)
         }
     }
 
+    qint64 el = t.elapsed();
+    writeLog(QString("I-002: Reader took %1 ms.").arg(el));
     return ret;
 }
 File::Command Reader::readCommand(QString l, int lineNum, bool* worked)
