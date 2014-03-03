@@ -22,7 +22,13 @@ MainWin::MainWin(QWidget *parent) :
     last = 0;
     c = 0;
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+    /* Qt4CompatiblePainting draws things with width>0 always. */
+    ui->graphicsView->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::Qt4CompatiblePainting);
+#else
     ui->graphicsView->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
+#endif
+
 #ifndef QT_NO_OPENGL
     ui->graphicsView->setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers)));
 #endif
@@ -107,13 +113,16 @@ void MainWin::on_btnUpdate_clicked()
 
 void MainWin::on_btnDump_clicked()
 {
-    QString f = QFileDialog::getSaveFileName(this, tr("Dumpfile name"), "", "SVG (*.svg);;ChipText (*.txt)");
+    QString f = QFileDialog::getSaveFileName(this, tr("Dumpfile name"), "", "All supported (*.svg *.txt);;SVG (*.svg);;ChipText (*.txt)");
     if(!f.size()) { return; }
     QString layer = ui->layersCmb->currentText().split("\t").at(0);
 
     if(f.endsWith("txt", Qt::CaseInsensitive)) {
+        bool ok = false;
         int scaleFactor = QInputDialog::getInt(
-                    this, tr("Scale factor:"), tr("Select scale factor:"), 15, 0, 30);
+                    this, tr("Scale factor:"), tr("Select scale factor:"), 15, 0, 30, 1, &ok);
+        if(!ok) { return; }
+
         GDLG* g = new GDLG(c->boundingRect(layer), scaleFactor);
         c->render(g, layer);
         g->writeFile(f);
