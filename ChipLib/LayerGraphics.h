@@ -1,9 +1,7 @@
 #ifndef LAYERGRAPHICS_H
 #define LAYERGRAPHICS_H
 
-#include <QtGlobal>
 #include <QList>
-#include <QPair>
 
 class Point {
 public:
