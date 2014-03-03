@@ -13,7 +13,7 @@ TEMPLATE = app
 include(../ChipLib/ChipLib.pri)
 
 SOURCES += Main.cpp \
-		MainWin.cpp \
+    MainWin.cpp \
     GraphicsSceneLG.cpp \
     PainterLG.cpp \
     GDLG.cpp
