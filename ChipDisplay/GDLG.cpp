@@ -28,6 +28,7 @@ GDLG::~GDLG()
 
 void GDLG::line(PointList pnts, qint64 w)
 {
+    if(im == 0) { return; }
     gdPoint points[pnts.size()];
     for(int i = 0; i < pnts.size(); i++) {
         Point* pnt = pnts.at(i);
@@ -41,6 +42,7 @@ void GDLG::line(PointList pnts, qint64 w)
 
 void GDLG::poly(PointList pnts, qint64 w)
 {
+    if(im == 0) { return; }
     gdPoint points[pnts.size()+1];
     for(int i = 0; i < pnts.size(); i++) {
         Point* pnt = pnts.at(i);
@@ -72,6 +74,7 @@ PixelData GDLG::getPixels()
 
 void GDLG::writeFile(QString filename)
 {
+    if(im == 0) { return; }
     qDebug("w:%d h:%d", im->sx, im->sy);
 
     int y = 0;
