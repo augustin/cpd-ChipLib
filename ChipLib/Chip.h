@@ -5,7 +5,6 @@
 #include <QStringList>
 #include <QMap>
 #include <QList>
-#include <QSize>
 #include <QRect>
 
 #include "LayerGraphics.h"
