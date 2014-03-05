@@ -236,7 +236,9 @@ QList<ChipObject*> Interpreter::command(Chip* chip, Cif::File* file, File::Comma
                 yCent  = cmd.params[3],
                 rot   = (cmd.params.size() == 6) ? 1 : 0;
         if(rot != 0) { LOG("ERR", -1, "BOX rotation not supported!"); }
-        qint64 x = xCent-(length/2), y = yCent-(width/2);
+        qint64 x = xCent-(length/2);
+        qint64 y = yCent-(width/2);
+        /* CIF reverses LENGTH and WIDTH, so reverse them again here */
         ret.append(layer->addRect(length, width, x, y));
     }
         break;

@@ -15,6 +15,7 @@ public:
 
     void line(PointList pnts, qint64 w);
     void poly(PointList pnts, qint64 w);
+    void rect(qint64 x1, qint64 y1, qint64 x2, qint64 y2);
 
 private:
     QPainter* p;

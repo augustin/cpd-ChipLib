@@ -2,14 +2,12 @@
 
 #include "IO/Cif.h"
 
-ChipObject* ChipLayer::addRect(qint64 length, qint64 width, qint64 xpos, qint64 ypos)
+ChipObject* ChipLayer::addRect(qint64 width, qint64 height, qint64 xpos, qint64 ypos)
 {
     ChipObject* c = new ChipObject;
-    c->type = POLYGON;
+    c->type = RECTANGLE;
 	c->points.append(new Point(xpos, ypos));
-    c->points.append(new Point(xpos+length-1, ypos));
-    c->points.append(new Point(xpos+length-1, ypos+width-1));
-    c->points.append(new Point(xpos, ypos+width-1));
+    c->points.append(new Point(xpos+width, ypos+height));
     c->w = 1;
     append(c);
     return c;
@@ -166,6 +164,8 @@ void Chip::render(LayerGraphics *lg, QString layer, qint64 l)
             lg->line(c->points, c->w);
         } else if(c->type == POLYGON) {
             lg->poly(c->points, c->w);
+        } else if(c->type == RECTANGLE) {
+            lg->rect(c->points[0]->x, c->points[0]->y, c->points[1]->x, c->points[1]->y);
         }
     }
 

@@ -16,6 +16,7 @@ class LayerGraphics
 public:
     virtual void line(PointList p, qint64 w) = 0;
     virtual void poly(PointList p, qint64 w) = 0;
+    virtual void rect(qint64 x1, qint64 y1, qint64 x2, qint64 y2) = 0;
 };
 
 #endif // LAYERGRAPHICS_H
