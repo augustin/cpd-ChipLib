@@ -70,6 +70,10 @@ void MainWin::on_actionOpen_CIF_triggered()
         QRect br = c->boundingRect(counts.value(key));
         qDebug(qPrintable(QString("%5 x %1 y %2 w %3 h %4").arg(br.x()).arg(br.y()).arg(br.width()).arg(-br.height()).arg(counts.value(key))));
     }
+
+    QRect br = c->boundingRect();
+    qDebug(qPrintable(QString("* x %1 y %2 w %3 h %4").arg(br.x()).arg(br.y()).arg(br.width()).arg(-br.height())));
+
     ui->layersCmb->setCurrentIndex(0);
     on_btnUpdate_clicked();
 }
