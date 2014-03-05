@@ -232,11 +232,12 @@ QList<ChipObject*> Interpreter::command(Chip* chip, Cif::File* file, File::Comma
     {
         qint64 length = cmd.params[0],
                 width = cmd.params[1],
-                xpos  = cmd.params[2],
-                ypos  = cmd.params[3],
+                xCent  = cmd.params[2],
+                yCent  = cmd.params[3],
                 rot   = (cmd.params.size() == 6) ? 1 : 0;
         if(rot != 0) { LOG("ERR", -1, "BOX rotation not supported!"); }
-        ret.append(layer->addRect(length, width, xpos, ypos));
+        qint64 x = xCent-(length/2), y = yCent-(width/2);
+        ret.append(layer->addRect(length, width, x, y));
     }
         break;
     case POLYGON:
