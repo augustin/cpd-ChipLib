@@ -61,9 +61,13 @@ void GDLG::rect(qint64 x1, qint64 y1, qint64 x2, qint64 y2)
 {
     if(im == 0) { return; }
     /* We have to subtract 1 because we don't want to include the X2 and Y2 point. */
+    x1 = X(x1);
+    y1 = Y(y1);
+    x2 = X(x2);
+    y2 = Y(y2);
     (x1 < x2) ? (x2 -= 1) : (x1 -= 1);
     (y1 < y2) ? (y2 -= 1) : (y1 -= 1);
-    gdImageFilledRectangle(im, X(x1), Y(y1), X(x2), Y(y2), black);
+    gdImageFilledRectangle(im, x1, y1, x2, y2, black);
 }
 
 
