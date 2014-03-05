@@ -2,15 +2,14 @@
 
 #include "IO/Cif.h"
 
-ChipObject* ChipLayer::addRect(qint64 length, qint64 width, qint64 x, qint64 y)
+ChipObject* ChipLayer::addRect(qint64 length, qint64 width, qint64 xpos, qint64 ypos)
 {
-    qint64 xpos = x-(length/2), ypos = y-(width/2);
     ChipObject* c = new ChipObject;
     c->type = POLYGON;
 	c->points.append(new Point(xpos, ypos));
-	c->points.append(new Point(xpos+length, ypos));
-	c->points.append(new Point(xpos+length, ypos+width));
-	c->points.append(new Point(xpos, ypos+width));
+    c->points.append(new Point(xpos+length-1, ypos));
+    c->points.append(new Point(xpos+length-1, ypos+width-1));
+    c->points.append(new Point(xpos, ypos+width-1));
     c->w = 1;
     append(c);
     return c;
