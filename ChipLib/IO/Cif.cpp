@@ -196,14 +196,23 @@ bool Interpreter::subroutine(Chip* chip, Cif::File* file, File::Subroutine func,
         items.append(command(chip, file, c, trans));
     }
 
+    int fast_trig[] = { 0, -1, 0, 1, 0, -1, 0 };
+#define FAST_COS(x) fast_trig[(x)/90+3]
+#define FAST_SIN(x) fast_trig[(x)/90+2]
+
     foreach(ChipObject* itm, items) {
         foreach(interp_Transform t, trans) {
             if(t.type == R) {
                 int deg = t.tparams[0];
                 foreach(Point* p, itm->points) {
                     qint64 x = p->x, y = p->y;
-                    p->x = cos(deg*M_PI/180)*x + cos((deg+90)*M_PI/180)*y;
-                    p->y = sin((deg+90)*M_PI/180)*y + sin(deg*M_PI/180)*x;
+                    if(deg % 90 == 0) {
+                        p->x = FAST_COS(deg)*x + FAST_COS(deg+90)*y;
+                        p->y = FAST_SIN(deg+90)*y + FAST_SIN(deg)*x;
+                    } else {
+                        p->x = cos(deg*M_PI/180)*x + cos((deg+90)*M_PI/180)*y;
+                        p->y = sin((deg+90)*M_PI/180)*y + sin(deg*M_PI/180)*x;
+                    }
                 }
             } else if(t.type == M) {
                 if(t.tparams[0] == X) {
