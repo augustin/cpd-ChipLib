@@ -1,0 +1,26 @@
+(This file is me trying to figure out exactly what happens when there are
+nested C [CALL] commands that have translations on both of them, and what
+order the translations are executed in, etc.)
+
+
+----- C 366;
+		C 500 M X T -276135 -158340;
+			C 101 R 0 1 T -276135 -158339;
+M X
+T -276135 -158340
+R 0 1
+T -276135 -158339
+will turn the following BOX command
+1						B 10000 20000 5000 5000
+steps:
+2	M X					B 10000 20000 -5000 5000
+3	T -276135 -158340	B 10000 20000 -281135 -153340
+4	R 0 1 (90dg)		B 20000 10000 153340 -281135
+5	T -276135 -158339	B 20000 10000 -122795 -439474
+-------------
+1						B 10000 20000 5000 5000
+steps:
+2	R 0 1 (90dg)		B 20000 10000 -5000 5000
+3	T -276135 -158339	B 20000 10000 -281135 -153339
+4	M X					B 20000 10000 281135 -153339
+5	T -276135 -158340	B 20000 10000 5000 -311679
